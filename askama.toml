@@ -1,0 +1,8 @@
+[general]
+# Tell Askama where to find templates
+dirs = ["templates"]
+
+# Enable template inheritance
+# This allows us to use {% extends %} and {% block %}
+[[syntax]]
+name = "html"
