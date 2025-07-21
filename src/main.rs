@@ -3,22 +3,25 @@ use axum::{
     extract::{Path, State},
     response::{Html, IntoResponse, Redirect},
     routing::{get, post},
-    Form, Router,
+    Form,
+    Router,
 };
 use serde::{Deserialize, Serialize};
 use sqlx::{sqlite::SqlitePool, FromRow};
 use tower_http::services::ServeDir;
 
+// This struct defines what a Customer looks like in our system
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 struct Customer {
-    id: i64,              // Unique identifier (automatic)
-    full_name: String,    // نام کامل
-    company: String,      // شرکت
-    email: String,        // ایمیل
-    phone_number: String, // شماره تلفن
-    notes: String,        // یادداشت‌ها
+    id: i64,                    // Unique identifier (automatic)
+    full_name: String,          // نام کامل
+    company: String,            // شرکت
+    email: String,              // ایمیل
+    phone_number: String,       // شماره تلفن
+    notes: String,              // یادداشت‌ها
 }
 
+// Template for the customer list page
 #[derive(Template)]
 #[template(path = "list.html")]
 struct ListTemplate {
@@ -26,12 +29,14 @@ struct ListTemplate {
     active_page: &'static str,
 }
 
+// Template for the add customer page - no fields needed
 #[derive(Template)]
 #[template(path = "add.html")]
 struct AddTemplate {
     active_page: &'static str,
 }
 
+// Template for the customer detail page
 #[derive(Template)]
 #[template(path = "detail.html")]
 struct DetailTemplate {
@@ -39,6 +44,7 @@ struct DetailTemplate {
     active_page: &'static str,
 }
 
+// Template for the edit customer page
 #[derive(Template)]
 #[template(path = "edit.html")]
 struct EditTemplate {
@@ -46,6 +52,7 @@ struct EditTemplate {
     active_page: &'static str,
 }
 
+// Form data structure - matches the HTML form fields
 #[derive(Deserialize)]
 struct CustomerForm {
     full_name: String,
@@ -57,8 +64,9 @@ struct CustomerForm {
 
 #[tokio::main]
 async fn main() {
+    // Create the database connection
     let pool = setup_database().await;
-
+    
     // Create our application with routes
     let app = Router::new()
         .route("/", get(list_customers))
@@ -66,17 +74,17 @@ async fn main() {
         .route("/customer/:id", get(view_customer))
         .route("/delete/:id", post(delete_customer))
         .route("/edit/:id", get(show_edit_form).post(update_customer))
-        .nest_service("/static", ServeDir::new("static")) // Serve static files
+        .nest_service("/static", ServeDir::new("static"))  // Serve static files
         .with_state(pool);
 
     // Start the server
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
         .unwrap();
-
-    println!("🚀 Server running at http://127.0.0.1:3000");
+    
+    println!("🚀 Server running at http://0.0.0.0:3000");
     println!("📊 Database initialized at rumiland.db");
-
+    
     axum::serve(listener, app).await.unwrap();
 }
 
@@ -86,7 +94,7 @@ async fn setup_database() -> SqlitePool {
     let pool = SqlitePool::connect("sqlite:rumiland.db?mode=rwc")
         .await
         .expect("Failed to create database pool");
-
+    
     // Create the customers table if it doesn't exist
     sqlx::query(
         r#"
@@ -98,38 +106,42 @@ async fn setup_database() -> SqlitePool {
             phone_number TEXT NOT NULL,
             notes TEXT NOT NULL
         )
-        "#,
+        "#
     )
     .execute(&pool)
     .await
     .expect("Failed to create customers table");
-
+    
     println!("✅ Database setup complete!");
-
+    
     pool
 }
 
 // Handler to list all customers
-async fn list_customers(State(pool): State<SqlitePool>) -> impl IntoResponse {
+async fn list_customers(
+    State(pool): State<SqlitePool>
+) -> impl IntoResponse {
     // Fetch all customers from the database
     let customers = sqlx::query_as::<_, Customer>("SELECT * FROM customers")
         .fetch_all(&pool)
         .await
         .unwrap_or_else(|_| vec![]);
-
+    
     // Create the template with our data
-    let template = ListTemplate {
+    let template = ListTemplate { 
         customers,
         active_page: "list",
     };
-
+    
     // Render the template to HTML
     Html(template.render().unwrap())
 }
 
 // Handler to show the add customer form
 async fn show_add_form() -> impl IntoResponse {
-    let template = AddTemplate { active_page: "add" };
+    let template = AddTemplate {
+        active_page: "add",
+    };
     Html(template.render().unwrap())
 }
 
@@ -140,8 +152,8 @@ async fn add_customer(
 ) -> impl IntoResponse {
     // Insert the new customer into the database
     let result = sqlx::query(
-        "INSERT INTO customers (full_name, company, email, phone_number, notes)
-         VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO customers (full_name, company, email, phone_number, notes) 
+         VALUES (?, ?, ?, ?, ?)"
     )
     .bind(&form.full_name)
     .bind(&form.company)
@@ -150,7 +162,7 @@ async fn add_customer(
     .bind(&form.notes)
     .execute(&pool)
     .await;
-
+    
     match result {
         Ok(_) => {
             println!("✅ New customer added: {}", form.full_name);
@@ -166,17 +178,22 @@ async fn add_customer(
 }
 
 // Handler to view a single customer's details
-async fn view_customer(State(pool): State<SqlitePool>, Path(id): Path<i64>) -> impl IntoResponse {
+async fn view_customer(
+    State(pool): State<SqlitePool>,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
     // Fetch the customer with the given ID
-    let customer = sqlx::query_as::<_, Customer>("SELECT * FROM customers WHERE id = ?")
-        .bind(id)
-        .fetch_one(&pool)
-        .await;
-
+    let customer = sqlx::query_as::<_, Customer>(
+        "SELECT * FROM customers WHERE id = ?"
+    )
+    .bind(id)
+    .fetch_one(&pool)
+    .await;
+    
     match customer {
         Ok(customer) => {
             // Render the detail template with the customer data
-            let template = DetailTemplate {
+            let template = DetailTemplate { 
                 customer,
                 active_page: "",
             };
@@ -191,22 +208,26 @@ async fn view_customer(State(pool): State<SqlitePool>, Path(id): Path<i64>) -> i
 }
 
 // Handler to delete a customer
-async fn delete_customer(State(pool): State<SqlitePool>, Path(id): Path<i64>) -> impl IntoResponse {
+async fn delete_customer(
+    State(pool): State<SqlitePool>,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
     // First, get the customer name for logging
-    let customer_name =
-        sqlx::query_as::<_, (String,)>("SELECT full_name FROM customers WHERE id = ?")
-            .bind(id)
-            .fetch_one(&pool)
-            .await
-            .map(|(name,)| name)
-            .unwrap_or_else(|_| "Unknown".to_string());
-
+    let customer_name = sqlx::query_as::<_, (String,)>(
+        "SELECT full_name FROM customers WHERE id = ?"
+    )
+    .bind(id)
+    .fetch_one(&pool)
+    .await
+    .map(|(name,)| name)
+    .unwrap_or_else(|_| "Unknown".to_string());
+    
     // Delete the customer from the database
     let result = sqlx::query("DELETE FROM customers WHERE id = ?")
         .bind(id)
         .execute(&pool)
         .await;
-
+    
     match result {
         Ok(query_result) => {
             if query_result.rows_affected() > 0 {
@@ -219,23 +240,28 @@ async fn delete_customer(State(pool): State<SqlitePool>, Path(id): Path<i64>) ->
             println!("❌ Error deleting customer: {}", e);
         }
     }
-
+    
     // Always redirect to the home page
     Redirect::to("/")
 }
 
 // Handler to show the edit form
-async fn show_edit_form(State(pool): State<SqlitePool>, Path(id): Path<i64>) -> impl IntoResponse {
+async fn show_edit_form(
+    State(pool): State<SqlitePool>,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
     // Fetch the customer to edit
-    let customer = sqlx::query_as::<_, Customer>("SELECT * FROM customers WHERE id = ?")
-        .bind(id)
-        .fetch_one(&pool)
-        .await;
-
+    let customer = sqlx::query_as::<_, Customer>(
+        "SELECT * FROM customers WHERE id = ?"
+    )
+    .bind(id)
+    .fetch_one(&pool)
+    .await;
+    
     match customer {
         Ok(customer) => {
             // Show the edit form with current data
-            let template = EditTemplate {
+            let template = EditTemplate { 
                 customer,
                 active_page: "",
             };
@@ -256,9 +282,9 @@ async fn update_customer(
 ) -> impl IntoResponse {
     // Update the customer in the database
     let result = sqlx::query(
-        "UPDATE customers
+        "UPDATE customers 
          SET full_name = ?, company = ?, email = ?, phone_number = ?, notes = ?
-         WHERE id = ?",
+         WHERE id = ?"
     )
     .bind(&form.full_name)
     .bind(&form.company)
@@ -268,7 +294,7 @@ async fn update_customer(
     .bind(id)
     .execute(&pool)
     .await;
-
+    
     match result {
         Ok(query_result) => {
             if query_result.rows_affected() > 0 {
