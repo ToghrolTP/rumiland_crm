@@ -1,0 +1,27 @@
+[package]
+name = "rumiland_crm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Web framework for building our server
+axum = "0.7"
+
+# Async runtime - allows our code to handle multiple requests at once
+tokio = { version = "1", features = ["full"] }
+
+# For working with data structures (serialization/deserialization)
+serde = { version = "1", features = ["derive"] }
+
+# Database toolkit for SQLite
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite"] }
+
+# HTML templating engine
+askama = "0.12"
+
+# For handling HTTP requests
+tower = "0.4"
+tower-http = { version = "0.5", features = ["fs"] }
+
+[build-dependencies]
+# No build dependencies needed for now
