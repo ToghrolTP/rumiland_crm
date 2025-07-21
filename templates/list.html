@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block title %}لیست مشتریان{% endblock %} {% block
+content %}
+<div class="page-header">
+    <div class="page-title">
+        <h1>مشتریان</h1>
+        <span class="badge badge-info">{{ customers.len() }} مشتری</span>
+    </div>
+    <div class="page-actions">
+        <a href="/add" class="btn btn-primary">
+            <span>➕</span>
+            <span>مشتری جدید</span>
+        </a>
+    </div>
+</div>
+
+{% if customers.is_empty() %}
+<div class="card empty-state">
+    <div class="empty-icon">📭</div>
+    <h3 class="empty-title">هنوز مشتری‌ای ثبت نشده</h3>
+    <p class="empty-description">
+        اولین مشتری خود را اضافه کنید تا شروع به مدیریت ارتباطات کنید.
+    </p>
+    <a href="/add" class="btn btn-primary btn-lg">
+        <span>➕</span>
+        <span>افزودن اولین مشتری</span>
+    </a>
+</div>
+{% else %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>نام</th>
+                <th>شرکت</th>
+                <th>ایمیل</th>
+                <th>تلفن</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>
+                    <strong>{{ customer.full_name }}</strong>
+                </td>
+                <td>{{ customer.company }}</td>
+                <td>
+                    <a href="mailto:{{ customer.email }}" class="text-small">
+                        {{ customer.email }}
+                    </a>
+                </td>
+                <td class="text-small">{{ customer.phone_number }}</td>
+                <td>
+                    <div class="table-actions">
+                        <a
+                            href="/customer/{{ customer.id }}"
+                            class="btn btn-ghost btn-sm"
+                        >
+                            مشاهده
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %} {% endblock %}
