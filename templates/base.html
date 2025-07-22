@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} - Rumiland CRM</title>
-
+    
     <!-- Vazirmatn Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
-
+    
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="/static/css/styles.css">
-
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -31,20 +31,46 @@
                     <span class="nav-icon">➕</span>
                     <span>افزودن</span>
                 </a>
+                {% if current_user.is_some() %}
+                    {% let user = current_user.as_ref().unwrap() %}
+                    {% if user.role == "admin" %}
+                    <a href="/users" class="nav-link {% if active_page == "users" %}active{% endif %}">
+                        <span class="nav-icon">👥</span>
+                        <span>کاربران</span>
+                    </a>
+                    {% endif %}
+                {% endif %}
             </div>
+            
+            {% if current_user.is_some() %}
+            {% let user = current_user.as_ref().unwrap() %}
+            <div class="nav-user">
+                <span class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name">{{ user.full_name }}</span>
+                    <span class="user-role">({% if user.role == "admin" %}مدیر{% else %}کاربر{% endif %})</span>
+                </span>
+                <form method="POST" action="/logout" style="display: inline;">
+                    <button type="submit" class="btn btn-ghost btn-sm">
+                        <span>🚪</span>
+                        <span>خروج</span>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
         </div>
     </nav>
-
+    
     <main class="main-content">
         <div class="container">
             {% block content %}{% endblock %}
         </div>
     </main>
-
+    
     <footer class="footer">
         <p>ساخته شده با ❤️ و Rust</p>
     </footer>
-
+    
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
