@@ -4,18 +4,30 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# Web framework for building our server
 axum = "0.7"
+
+# Async runtime - allows our code to handle multiple requests at once
 tokio = { version = "1", features = ["full"] }
+
+# For working with data structures (serialization/deserialization)
 serde = { version = "1", features = ["derive"] }
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite"] }
+
+# Database toolkit for SQLite
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono"] }
+
+# HTML templating engine
 askama = "0.12"
+
+# For handling HTTP requests
 tower = "0.4"
 tower-http = { version = "0.5", features = ["fs"] }
 
 # Authentication dependencies
-bcrypt = "0.15"  # For password hashing
-axum-extra = { version = "0.9", features = ["cookie", "cookie-signed"] }  # For sessions
+bcrypt = { version = "0.15", features = ["std"] }  # For password hashing
+axum-extra = { version = "0.9", features = ["cookie"] }  # For sessions
 uuid = { version = "1.6", features = ["v4", "serde"] }  # For session IDs
 chrono = { version = "0.4", features = ["serde"] }  # For timestamps
 
 [build-dependencies]
+# No build dependencies needed for now
