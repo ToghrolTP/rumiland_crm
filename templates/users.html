@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت کاربران{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h1>کاربران سیستم</h1>
+        <span class="badge badge-info">{{ users.len() }} کاربر</span>
+    </div>
+    <div class="page-actions">
+        <a href="/users/add" class="btn btn-primary">
+            <span>➕</span>
+            <span>کاربر جدید</span>
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>نام کامل</th>
+                <th>نام کاربری</th>
+                <th>نقش</th>
+                <th>تاریخ ایجاد</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <strong>{{ user.full_name }}</strong>
+                </td>
+                <td>{{ user.username }}</td>
+                <td>
+                    {% if user.role == "admin" %}
+                        <span class="badge badge-primary">مدیر</span>
+                    {% else %}
+                        <span class="badge">کاربر</span>
+                    {% endif %}
+                </td>
+                <td class="text-small">{{ user.created_at }}</td>
+                <td>
+                    {% match current_user %}
+                        {% when Some with (current) %}
+                            {% if user.id != current.id %}
+                            <form method="POST" action="/users/delete/{{ user.id }}" 
+                                  onsubmit="return confirm('آیا از حذف کاربر «{{ user.full_name }}» اطمینان دارید؟');"
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    حذف
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted text-small">کاربر فعلی</span>
+                            {% endif %}
+                        {% when None %}
+                            <span class="text-muted text-small">-</span>
+                    {% endmatch %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card" style="margin-top: var(--space-xl);">
+    <h3>راهنمای نقش‌ها</h3>
+    <ul style="color: var(--text-muted); line-height: 2;">
+        <li><strong>مدیر:</strong> دسترسی کامل به سیستم، مدیریت کاربران و مشتریان</li>
+        <li><strong>کاربر:</strong> دسترسی به مدیریت مشتریان (افزودن، ویرایش، حذف)</li>
+    </ul>
+</div>
+{% endblock %}
