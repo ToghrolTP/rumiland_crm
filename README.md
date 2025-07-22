@@ -8,6 +8,8 @@ A simple, modern CRM (Customer Relationship Management) web application built wi
 ## Features ✨
 
 - **Full CRUD Operations**: Create, Read, Update, and Delete customers
+- **User Authentication**: Secure login system with sessions
+- **Role-Based Access**: Admin and regular user roles
 - **Persian/RTL Support**: Complete right-to-left interface in Persian
 - **Modern UI**: Clean, minimal design with Gruvbox Dark theme
 - **Responsive Design**: Works perfectly on desktop and mobile devices
@@ -71,6 +73,19 @@ rumiland_crm/
 ```
 
 ## Usage 💡
+
+### Default Login
+On first run, a default admin account is created:
+- **Username**: admin
+- **Password**: admin123
+
+⚠️ **Important**: Change the default password after first login!
+
+### User Management (Admin Only)
+1. Click "کاربران" (Users) in the navigation
+2. Add new users with different roles:
+   - **Admin**: Full access to system and user management
+   - **User**: Can manage customers only
 
 ### Adding a Customer
 1. Click "افزودن مشتری جدید" (Add New Customer) button
