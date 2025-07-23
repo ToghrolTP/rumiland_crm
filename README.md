@@ -1,35 +1,45 @@
 # Rumiland CRM 🏢
 
-A simple, modern CRM (Customer Relationship Management) web application built with Rust, featuring a Persian/RTL interface and beautiful Gruvbox Dark theme.
+A modern, modular CRM (Customer Relationship Management) web application built with Rust, featuring Persian/RTL interface and role-based authentication.
 
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
 
-## Features ✨
+## 🏗️ Architecture
 
-- **Full CRUD Operations**: Create, Read, Update, and Delete customers
-- **User Authentication**: Secure login system with sessions
+This project follows a clean, modular architecture with clear separation of concerns:
+
+```
+src/
+├── main.rs           # Application entry point
+├── config.rs         # Configuration management
+├── error.rs          # Centralized error handling
+├── models/           # Data models and entities
+├── db/               # Database layer
+├── handlers/         # HTTP request handlers
+├── middleware/       # Middleware (authentication, etc.)
+├── templates/        # Template definitions
+└── utils/            # Utility functions
+```
+
+## ✨ Features
+
+- **Full CRUD Operations**: Complete customer management
+- **Authentication System**: Secure session-based auth
 - **Role-Based Access**: Admin and regular user roles
-- **Persian/RTL Support**: Complete right-to-left interface in Persian
-- **Modern UI**: Clean, minimal design with Gruvbox Dark theme
-- **Responsive Design**: Works perfectly on desktop and mobile devices
-- **Fast & Lightweight**: Built with Rust and SQLite for optimal performance
-- **Server-Side Rendering**: Using Askama templating engine
+- **Persian/RTL Support**: Native Persian interface
+- **Modular Architecture**: Clean, maintainable code structure
+- **Error Handling**: Centralized error management
+- **Type Safety**: Leveraging Rust's type system
 
-## Tech Stack 🛠️
+## 🚀 Getting Started
 
-- **Backend**: Rust with Axum web framework
-- **Database**: SQLite with sqlx
-- **Templating**: Askama
-- **Styling**: Custom CSS with Gruvbox color scheme
-- **Font**: Vazirmatn for beautiful Persian typography
+### Prerequisites
 
-## Prerequisites 📋
+- Rust 1.70+
+- SQLite3
 
-- Rust 1.70 or higher
-- Cargo (comes with Rust)
-
-## Installation 🚀
+### Installation
 
 1. Clone the repository:
 ```bash
@@ -47,78 +57,145 @@ cargo build --release
 cargo run
 ```
 
-4. Open your browser and navigate to:
-```
-http://127.0.0.1:3000
-```
+### Configuration
 
-## Project Structure 📁
-
-```
-rumiland_crm/
-├── src/
-│   └── main.rs          # Application entry point and routes
-├── templates/           # HTML templates
-│   ├── base.html       # Base template for consistent layout
-│   ├── list.html       # Customer list page
-│   ├── add.html        # Add customer form
-│   ├── detail.html     # Customer detail view
-│   └── edit.html       # Edit customer form
-├── static/
-│   └── css/
-│       └── styles.css  # Gruvbox theme and styles
-├── Cargo.toml          # Rust dependencies
-├── askama.toml         # Template engine configuration
-└── rumiland.db         # SQLite database (created on first run)
-```
-
-## Usage 💡
-
-### Default Login
-On first run, a default admin account is created:
-- **Username**: admin
-- **Password**: admin123
-
-⚠️ **Important**: Change the default password after first login!
-
-### User Management (Admin Only)
-1. Click "کاربران" (Users) in the navigation
-2. Add new users with different roles:
-   - **Admin**: Full access to system and user management
-   - **User**: Can manage customers only
-
-### Adding a Customer
-1. Click "افزودن مشتری جدید" (Add New Customer) button
-2. Fill in the required fields
-3. Click "ذخیره مشتری" (Save Customer)
-
-### Viewing Customers
-- All customers are displayed on the home page
-- Click "مشاهده" (View) to see detailed information
-
-### Editing a Customer
-1. From the detail view, click "ویرایش" (Edit)
-2. Update the information
-3. Click "ذخیره تغییرات" (Save Changes)
-
-### Deleting a Customer
-1. From the detail view, click "حذف" (Delete)
-2. Confirm the deletion in the popup dialog
-
-## Development 🔧
-
-To run in development mode with auto-reload:
+The application can be configured via environment variables:
 
 ```bash
-cargo watch -x run
+# Database URL (default: sqlite:rumiland.db?mode=rwc)
+DATABASE_URL=sqlite:mydb.db
+
+# Server host and port
+SERVER_HOST=0.0.0.0
+SERVER_PORT=3000
+
+# Session duration in hours (default: 24)
+SESSION_DURATION_HOURS=24
 ```
 
-## License 📄
+### Creating Admin User
 
-This project is open source and available under the [MIT License](LICENSE).
+On first run, a default admin is created:
+- Username: `admin`
+- Password: `admin123`
 
-## Acknowledgments 🙏
+To create a custom admin user:
+```bash
+cargo run create-admin
+```
 
-- Built with love using Rust and its amazing ecosystem
-- Gruvbox color scheme by [morhetz](https://github.com/morhetz/gruvbox)
-- Vazirmatn font by [rastikerdar](https://github.com/rastikerdar)
+## 📁 Project Structure
+
+### Models (`src/models/`)
+- `customer.rs`: Customer entity and forms
+- `user.rs`: User entity, roles, and authentication forms
+- `session.rs`: Session management
+
+### Database (`src/db/`)
+- `connection.rs`: Database connection pool
+- `migrations.rs`: SQL migrations and schema
+
+### Handlers (`src/handlers/`)
+- `auth.rs`: Login/logout handlers
+- `customers.rs`: Customer CRUD operations
+- `users.rs`: User management (admin only)
+
+### Middleware (`src/middleware/`)
+- `auth.rs`: Authentication middleware
+
+### Templates (`src/templates/`)
+- Template structs for Askama rendering
+
+### Utils (`src/utils/`)
+- `password.rs`: Password hashing utilities
+
+## 🔧 Development
+
+### Running Tests
+```bash
+cargo test
+```
+
+### Code Formatting
+```bash
+cargo fmt
+```
+
+### Linting
+```bash
+cargo clippy
+```
+
+### Adding New Features
+
+1. **Add a new model**: Create in `src/models/`
+2. **Add handlers**: Create in `src/handlers/`
+3. **Add routes**: Update `src/handlers/mod.rs`
+4. **Add templates**: Create in `src/templates/` and `templates/`
+
+## 🚢 Deployment
+
+### Building for Production
+```bash
+cargo build --release
+```
+
+### Running in Production
+```bash
+DATABASE_URL=sqlite:/path/to/db.db \
+SERVER_HOST=0.0.0.0 \
+SERVER_PORT=80 \
+./target/release/rumiland_crm
+```
+
+### Using systemd
+See `deployment/rumiland.service` for systemd configuration.
+
+## 🔒 Security
+
+- Passwords are hashed using bcrypt
+- Sessions expire after 24 hours
+- SQL injection protection via parameterized queries
+- XSS protection in templates
+- CSRF protection via SameSite cookies
+
+## 📝 API Structure
+
+### Public Routes
+- `GET /login` - Login page
+- `POST /login` - Authentication
+- `GET /static/*` - Static assets
+
+### Protected Routes
+- `GET /` - Customer list
+- `GET /add` - Add customer form
+- `POST /add` - Create customer
+- `GET /customer/:id` - View customer
+- `GET /edit/:id` - Edit form
+- `POST /edit/:id` - Update customer
+- `POST /delete/:id` - Delete customer
+- `POST /logout` - Logout
+
+### Admin Routes
+- `GET /users` - User list
+- `GET /users/add` - Add user form
+- `POST /users/add` - Create user
+- `POST /users/delete/:id` - Delete user
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [Axum](https://github.com/tokio-rs/axum) web framework
+- Styled with [Gruvbox](https://github.com/morhetz/gruvbox) color scheme
+- Persian font: [Vazirmatn](https://github.com/rastikerdar/vazirmatn)
