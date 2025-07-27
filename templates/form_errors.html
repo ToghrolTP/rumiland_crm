@@ -1,0 +1,43 @@
+<!-- Form validation errors partial -->
+<div class="form-errors">
+    <div class="form-errors-header">
+        <span class="form-errors-icon">⚠️</span>
+        <h3>لطفاً خطاهای زیر را برطرف کنید:</h3>
+    </div>
+    <ul class="form-errors-list">
+        {% for error in errors %}
+        <li class="form-error-item" data-field="{{ error.field_name }}">
+            <strong>{{ error.field_label }}:</strong>
+            <span>{{ error.message }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+// Highlight fields with errors
+document.addEventListener('DOMContentLoaded', function() {
+    const errorItems = document.querySelectorAll('.form-error-item');
+    
+    errorItems.forEach(item => {
+        const fieldName = item.getAttribute('data-field');
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        
+        if (field) {
+            field.classList.add('input-error');
+            
+            // Scroll to first error field
+            if (item === errorItems[0]) {
+                field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                field.focus();
+            }
+            
+            // Add error message below field
+            const errorMsg = document.createElement('p');
+            errorMsg.className = 'field-error-message';
+            errorMsg.textContent = item.querySelector('span').textContent;
+            field.parentElement.appendChild(errorMsg);
+        }
+    });
+});
+</script>

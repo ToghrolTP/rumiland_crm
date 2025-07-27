@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Rumiland CRM</title>
+    
+    <!-- Vazirmatn Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <style>
+    .error-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-lg);
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    }
+
+    .error-container {
+        max-width: 600px;
+        width: 100%;
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .error-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        padding: var(--space-2xl);
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+    }
+    
+    .error-header {
+        margin-bottom: var(--space-xl);
+    }
+
+    .error-icon {
+        font-size: 4rem;
+        margin-bottom: var(--space-lg);
+        display: inline-block;
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+    }
+    
+    .error-icon-404 { color: var(--accent-warning); }
+    .error-icon-401 { color: var(--accent-secondary); }
+    .error-icon-403 { color: var(--accent-danger); }
+    .error-icon-500 { color: var(--accent-danger); }
+    .error-icon-default { color: var(--text-muted); }
+
+    .error-code {
+        display: inline-block;
+        background-color: var(--bg-tertiary);
+        color: var(--text-muted);
+        padding: var(--space-xs) var(--space-md);
+        border-radius: var(--radius-full);
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: var(--space-md);
+    }
+
+    .error-title {
+        color: var(--text-primary);
+        margin-bottom: var(--space-md);
+        font-size: 1.75rem;
+        font-weight: 600;
+    }
+
+    .error-message {
+        color: var(--text-secondary);
+        margin-bottom: var(--space-lg);
+        line-height: 1.6;
+        font-size: 1.125rem;
+    }
+    
+    .error-details {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+        margin-bottom: var(--space-xl);
+        text-align: right;
+    }
+    
+    .error-details p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 0.9375rem;
+    }
+    
+    .error-suggestions {
+        margin-bottom: var(--space-xl);
+        text-align: right;
+    }
+    
+    .error-suggestions h3 {
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        margin-bottom: var(--space-md);
+    }
+    
+    .error-suggestions ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .error-suggestions li {
+        color: var(--text-secondary);
+        padding: var(--space-sm) 0;
+        padding-right: var(--space-lg);
+        position: relative;
+        font-size: 0.9375rem;
+    }
+    
+    .error-suggestions li:before {
+        content: "💡";
+        position: absolute;
+        right: 0;
+        top: var(--space-sm);
+    }
+
+    .error-actions {
+        display: flex;
+        gap: var(--space-sm);
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .error-illustration {
+        margin-bottom: var(--space-lg);
+        opacity: 0.1;
+        font-size: 8rem;
+        line-height: 1;
+        color: var(--text-muted);
+        user-select: none;
+    }
+
+    @media (max-width: 768px) {
+        .error-card {
+            padding: var(--space-lg);
+        }
+        
+        .error-icon {
+            font-size: 3rem;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+        }
+        
+        .error-actions {
+            flex-direction: column;
+        }
+        
+        .error-actions .btn {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-container">
+            <div class="error-card">
+                <div class="error-header">
+                    {% if error_code %}
+                        {% match error_code.as_str() %}
+                            {% when "404" %}
+                                <div class="error-icon error-icon-404">🔍</div>
+                            {% when "401" %}
+                                <div class="error-icon error-icon-401">🔐</div>
+                            {% when "403" %}
+                                <div class="error-icon error-icon-403">🚫</div>
+                            {% when "500" %}
+                                <div class="error-icon error-icon-500">⚠️</div>
+                            {% when _ %}
+                                <div class="error-icon error-icon-default">❌</div>
+                        {% endmatch %}
+                        <div class="error-code">خطای {{ error_code }}</div>
+                    {% else %}
+                        <div class="error-icon error-icon-default">⚠️</div>
+                    {% endif %}
+                    
+                    <h1 class="error-title">{{ title }}</h1>
+                    <p class="error-message">{{ message }}</p>
+                </div>
+                
+                {% if details %}
+                <div class="error-details">
+                    <p>{{ details }}</p>
+                </div>
+                {% endif %}
+                
+                {% if !suggestions.is_empty() %}
+                <div class="error-suggestions">
+                    <h3>پیشنهادهای رفع مشکل:</h3>
+                    <ul>
+                        {% for suggestion in suggestions %}
+                        <li>{{ suggestion }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <div class="error-illustration">
+                    {% if error_code %}
+                        {{ error_code }}
+                    {% else %}
+                        !
+                    {% endif %}
+                </div>
+                
+                <div class="error-actions">
+                    {% if error_code == Some("401".to_string()) %}
+                        <a href="/login" class="btn btn-primary">
+                            <span>🔐</span>
+                            <span>ورود به سیستم</span>
+                        </a>
+                    {% else %}
+                        <a href="{{ home_url }}" class="btn btn-primary">
+                            <span>🏠</span>
+                            <span>صفحه اصلی</span>
+                        </a>
+                    {% endif %}
+                    
+                    {% if back_url.starts_with("javascript:") %}
+                        <button type="button" class="btn btn-ghost" onclick="{{ back_url }}">
+                            {% if back_url.contains("reload") %}
+                                <span>🔄</span>
+                                <span>تلاش مجدد</span>
+                            {% else %}
+                                <span>→</span>
+                                <span>بازگشت</span>
+                            {% endif %}
+                        </button>
+                    {% else %}
+                        <a href="{{ back_url }}" class="btn btn-ghost">
+                            <span>→</span>
+                            <span>بازگشت</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
