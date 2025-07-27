@@ -7,15 +7,22 @@ edition = "2021"
 axum = "0.7"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono"] }
+sqlx = { version = "0.7", features = [
+    "runtime-tokio-rustls",
+    "sqlite",
+    "chrono",
+] }
 askama = "0.12"
 tower = "0.4"
 tower-http = { version = "0.5", features = ["fs"] }
 
 # Authentication dependencies
-bcrypt = { version = "0.15", features = ["std"] }  # For password hashing
-axum-extra = { version = "0.9", features = ["cookie"] }  # For sessions
-uuid = { version = "1.6", features = ["v4", "serde"] }  # For session IDs
-chrono = { version = "0.4", features = ["serde"] }  # For timestamps
+bcrypt = { version = "0.15", features = ["std"] } # For password hashing
+axum-extra = { version = "0.9", features = ["cookie"] } # For sessions
+uuid = { version = "1.6", features = ["v4", "serde"] } # For session IDs
+chrono = { version = "0.4", features = ["serde"] } # For timestamps
+cookie = { version = "0.18", features = [
+    "percent-encode",
+] } # For cookie time duration
 
 [build-dependencies]
