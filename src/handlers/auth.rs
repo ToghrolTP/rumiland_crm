@@ -23,8 +23,31 @@ pub async fn show_login(jar: CookieJar) -> impl IntoResponse {
         return Redirect::to("/").into_response();
     }
     
-    let template = LoginTemplate { error: None };
-    Html(template.render().unwrap()).into_response()
+    // Check for flash message
+    let flash_message = jar.get("flash_message").map(|c| c.value().to_string());
+    
+    // Check if we should show login help
+    let show_help = jar.get("login_help").is_some();
+    
+    // Remove cookies after reading
+    let jar = if flash_message.is_some() || show_help {
+        jar.remove(Cookie::from("flash_message"))
+           .remove(Cookie::from("login_help"))
+    } else {
+        jar
+    };
+    
+    let mut template = LoginTemplate { 
+        error: None,
+        flash_message,
+    };
+    
+    // Add help message if login failed
+    if show_help {
+        template.error = Some("نام کاربری یا رمز عبور اشتباه است".to_string());
+    }
+    
+    (jar, Html(template.render().unwrap())).into_response()
 }
 
 /// Handle login form submission
@@ -64,15 +87,37 @@ pub async fn do_login(
                 .http_only(true)
                 .build();
             
+            // Set welcome flash message
+            let flash_cookie = Cookie::build(("flash_message", format!("خوش آمدید، {} 👋", user.full_name)))
+                .path("/")
+                .same_site(SameSite::Lax)
+                .http_only(true)
+                .max_age(cookie::time::Duration::seconds(60))
+                .build();
+            
+            let jar = jar.add(cookie).add(flash_cookie);
+            
             println!("✅ User logged in: {}", user.username);
-            return Ok((jar.add(cookie), Redirect::to("/")));
+            return Ok((jar, Redirect::to("/")));
         }
     }
     
     // Login failed
     let template = LoginTemplate {
         error: Some("نام کاربری یا رمز عبور اشتباه است".to_string()),
+        flash_message: None,
     };
+    
+    // Add helpful cookie with suggestions
+    let help_cookie = Cookie::build(("login_help", "true"))
+        .path("/login")
+        .same_site(SameSite::Lax)
+        .http_only(true)
+        .max_age(cookie::time::Duration::seconds(30))
+        .build();
+    
+    let jar = jar.add(help_cookie);
+    
     Err((jar, Html(template.render().unwrap())))
 }
 
@@ -90,7 +135,16 @@ pub async fn logout(
             .ok();
     }
     
-    // Remove cookie
-    let jar = jar.remove(Cookie::from("session_id"));
+    // Set logout flash message
+    let flash_cookie = Cookie::build(("flash_message", "با موفقیت از سیستم خارج شدید 👋"))
+        .path("/")
+        .same_site(SameSite::Lax)
+        .http_only(true)
+        .max_age(cookie::time::Duration::seconds(60))
+        .build();
+    
+    // Remove session cookie and add flash message
+    let jar = jar.remove(Cookie::from("session_id")).add(flash_cookie);
+    
     (jar, Redirect::to("/login"))
 }
