@@ -1,8 +1,5 @@
-{% extends "base.html" %}
-
-{% block title %}مدیریت کاربران{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}مدیریت کاربران{% endblock %} {% block
+content %}
 <div class="page-header">
     <div class="page-title">
         <h1>کاربران سیستم</h1>
@@ -15,6 +12,20 @@
         </a>
     </div>
 </div>
+
+{% if flash_message.is_some() %}
+<div class="flash-message flash-success">
+    <span class="flash-icon">✅</span>
+    <span class="flash-text">{{ flash_message.as_ref().unwrap() }}</span>
+    <button
+        type="button"
+        class="flash-close"
+        onclick="this.parentElement.style.display='none'"
+    >
+        <span>✕</span>
+    </button>
+</div>
+{% endif %}
 
 <div class="table-container">
     <table>
@@ -36,28 +47,36 @@
                 <td>{{ user.username }}</td>
                 <td>
                     {% if user.role == "admin" %}
-                        <span class="badge badge-primary">مدیر</span>
+                    <span class="badge badge-primary">مدیر</span>
                     {% else %}
-                        <span class="badge">کاربر</span>
+                    <span class="badge">کاربر</span>
                     {% endif %}
                 </td>
                 <td class="text-small">{{ user.created_at }}</td>
                 <td>
-                    {% match current_user %}
-                        {% when Some with (current) %}
-                            {% if user.id != current.id %}
-                            <form method="POST" action="/users/delete/{{ user.id }}" 
-                                  onsubmit="return confirm('آیا از حذف کاربر «{{ user.full_name }}» اطمینان دارید؟');"
-                                  style="display: inline;">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    حذف
-                                </button>
-                            </form>
-                            {% else %}
-                            <span class="text-muted text-small">کاربر فعلی</span>
-                            {% endif %}
-                        {% when None %}
-                            <span class="text-muted text-small">-</span>
+                    {% match current_user %} {% when Some with (current) %} {%
+                    if user.id != current.id %}
+                    <form
+                        method="POST"
+                        action="/users/delete/{{ user.id }}"
+                        class="delete-user-form"
+                        data-user-name="{{ user.full_name }}"
+                        style="display: inline"
+                    >
+                        <button
+                            type="submit"
+                            class="btn btn-danger btn-sm delete-user-btn"
+                        >
+                            <span class="btn-content">حذف</span>
+                            <span class="btn-loading" style="display: none">
+                                <span class="spinner"></span>
+                            </span>
+                        </button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted text-small">کاربر فعلی</span>
+                    {% endif %} {% when None %}
+                    <span class="text-muted text-small">-</span>
                     {% endmatch %}
                 </td>
             </tr>
@@ -66,11 +85,39 @@
     </table>
 </div>
 
-<div class="card" style="margin-top: var(--space-xl);">
+<div class="card" style="margin-top: var(--space-xl)">
     <h3>راهنمای نقش‌ها</h3>
-    <ul style="color: var(--text-muted); line-height: 2;">
-        <li><strong>مدیر:</strong> دسترسی کامل به سیستم، مدیریت کاربران و مشتریان</li>
-        <li><strong>کاربر:</strong> دسترسی به مدیریت مشتریان (افزودن، ویرایش، حذف)</li>
+    <ul style="color: var(--text-muted); line-height: 2">
+        <li>
+            <strong>مدیر:</strong> دسترسی کامل به سیستم، مدیریت کاربران و
+            مشتریان
+        </li>
+        <li>
+            <strong>کاربر:</strong> دسترسی به مدیریت مشتریان (افزودن، ویرایش،
+            حذف)
+        </li>
     </ul>
 </div>
+
+<script>
+    // Handle delete user forms
+    document.querySelectorAll(".delete-user-form").forEach((form) => {
+        form.addEventListener("submit", function (e) {
+            const btn = this.querySelector(".delete-user-btn");
+            const userName = this.getAttribute("data-user-name");
+
+            // Confirm deletion
+            if (!confirm(`آیا از حذف کاربر «${userName}» اطمینان دارید؟`)) {
+                e.preventDefault();
+                return;
+            }
+
+            // Update button state
+            btn.disabled = true;
+            btn.classList.add("btn-loading-state");
+            btn.querySelector(".btn-content").style.display = "none";
+            btn.querySelector(".btn-loading").style.display = "inline-flex";
+        });
+    });
+</script>
 {% endblock %}

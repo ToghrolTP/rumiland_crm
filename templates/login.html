@@ -74,10 +74,61 @@
             color: var(--text-muted);
             font-size: 0.875rem;
         }
+        
+        .login-flash {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .login-help {
+            background-color: rgba(131, 165, 152, 0.1);
+            border: 1px solid var(--accent-secondary);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-top: var(--space-md);
+            text-align: right;
+        }
+        
+        .help-title {
+            color: var(--accent-secondary);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            font-size: 0.875rem;
+        }
+        
+        .help-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .help-list li {
+            color: var(--text-secondary);
+            padding: var(--space-xs) 0;
+            padding-right: var(--space-md);
+            position: relative;
+            font-size: 0.8125rem;
+        }
+        
+        .help-list li:before {
+            content: "•";
+            position: absolute;
+            right: 0;
+            color: var(--accent-secondary);
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
+        {% if flash_message.is_some() %}
+        <div class="flash-message flash-success login-flash">
+            <span class="flash-icon">👋</span>
+            <span class="flash-text">{{ flash_message.as_ref().unwrap() }}</span>
+            <button type="button" class="flash-close" onclick="this.parentElement.style.display='none'">
+                <span>✕</span>
+            </button>
+        </div>
+        {% endif %}
+        
         <div class="login-card">
             <div class="login-header">
                 <div class="login-logo">🏢</div>
@@ -89,9 +140,17 @@
                 <div class="error-message">
                     {{ error.as_ref().unwrap() }}
                 </div>
+                <div class="login-help">
+                    <p class="help-title">💡 نکات مفید:</p>
+                    <ul class="help-list">
+                        <li>حروف بزرگ و کوچک در رمز عبور مهم است</li>
+                        <li>مطمئن شوید Caps Lock خاموش است</li>
+                        <li>اگر رمز عبور را فراموش کرده‌اید، با مدیر سیستم تماس بگیرید</li>
+                    </ul>
+                </div>
             {% endif %}
             
-            <form method="POST" action="/login">
+            <form method="POST" action="/login" id="login-form">
                 <div class="form-group">
                     <label for="username" class="form-label">نام کاربری</label>
                     <input type="text" id="username" name="username" class="form-input" 
@@ -104,9 +163,15 @@
                            placeholder="رمز عبور خود را وارد کنید" required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: var(--space-lg);">
-                    <span>🔐</span>
-                    <span>ورود به سیستم</span>
+                <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="width: 100%; margin-top: var(--space-lg);">
+                    <span class="btn-content">
+                        <span>🔐</span>
+                        <span>ورود به سیستم</span>
+                    </span>
+                    <span class="btn-loading" style="display: none;">
+                        <span class="spinner"></span>
+                        <span>در حال بررسی...</span>
+                    </span>
                 </button>
             </form>
             
@@ -115,5 +180,65 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Auto-dismiss flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateY(-20px)';
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+        });
+        
+        // Login form submission handling
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        let isSubmitting = false;
+        
+        loginForm.addEventListener('submit', function(e) {
+            // Prevent multiple submissions
+            if (isSubmitting) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Mark as submitting
+            isSubmitting = true;
+            
+            // Update button state only (don't touch inputs)
+            loginBtn.disabled = true;
+            loginBtn.classList.add('btn-loading-state');
+            loginBtn.querySelector('.btn-content').style.display = 'none';
+            loginBtn.querySelector('.btn-loading').style.display = 'flex';
+            
+            // Visual feedback only - inputs remain functional
+            const inputs = loginForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.style.opacity = '0.7';
+            });
+        });
+        
+        // Reset form state if user navigates back
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                isSubmitting = false;
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('btn-loading-state');
+                loginBtn.querySelector('.btn-content').style.display = 'flex';
+                loginBtn.querySelector('.btn-loading').style.display = 'none';
+                
+                const inputs = loginForm.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.style.opacity = '1';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

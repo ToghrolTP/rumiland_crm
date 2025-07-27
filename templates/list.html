@@ -13,6 +13,28 @@ content %}
     </div>
 </div>
 
+{% if flash_message.is_some() %}
+<div class="flash-message flash-success {% if flash_message.as_ref().unwrap().contains("✅") %}with-actions{% endif %}">
+    <span class="flash-icon">✅</span>
+    <span class="flash-text">{{ flash_message.as_ref().unwrap() }}</span>
+    <button type="button" class="flash-close" onclick="this.parentElement.style.display='none'">
+        <span>✕</span>
+    </button>
+    {% if flash_message.as_ref().unwrap().contains("با موفقیت اضافه شد") %}
+    <div class="flash-actions">
+        <a href="/add" class="quick-action-btn">
+            <span>➕</span>
+            <span>افزودن مشتری دیگر</span>
+        </a>
+        <a href="/add?batch=true" class="quick-action-btn">
+            <span>📊</span>
+            <span>ورود دسته‌ای</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
 {% if customers.is_empty() %}
 <div class="card empty-state">
     <div class="empty-icon">📭</div>
@@ -49,7 +71,9 @@ content %}
                         {{ customer.email }}
                     </a>
                 </td>
-                <td class="text-small">{{ customer.phone_number }}</td>
+                <td>
+                    <span class="phone-number text-small">{{ customer.formatted_phone() }}</span>
+                </td>
                 <td>
                     <div class="table-actions">
                         <a
