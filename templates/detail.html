@@ -7,6 +7,20 @@
     </div>
 </div>
 
+{% if flash_message.is_some() %}
+<div class="flash-message flash-success">
+    <span class="flash-icon">✅</span>
+    <span class="flash-text">{{ flash_message.as_ref().unwrap() }}</span>
+    <button
+        type="button"
+        class="flash-close"
+        onclick="this.parentElement.style.display='none'"
+    >
+        <span>✕</span>
+    </button>
+</div>
+{% endif %}
+
 <div class="card">
     <div class="detail-grid">
         <div class="detail-row">
@@ -22,16 +36,26 @@
         <div class="detail-row">
             <div class="detail-label">ایمیل</div>
             <div class="detail-value">
-                <a href="mailto:{{ customer.email }}">{{ customer.email }}</a>
+                <a href="mailto:{{ customer.email }}" class="email-link">
+                    <span class="email-icon">✉️</span>
+                    <span class="email-address">{{ customer.email }}</span>
+                </a>
             </div>
         </div>
 
         <div class="detail-row">
             <div class="detail-label">شماره تلفن</div>
             <div class="detail-value">
-                <a href="tel:{{ customer.phone_number }}"
-                    >{{ customer.phone_number }}</a
-                >
+                <a href="tel:{{ customer.phone_number }}" class="phone-link">
+                    {% if customer.phone_number.starts_with("09") %}
+                    <span class="phone-icon">📱</span>
+                    {% else %}
+                    <span class="phone-icon">☎️</span>
+                    {% endif %}
+                    <span class="phone-number"
+                        >{{ customer.formatted_phone() }}</span
+                    >
+                </a>
             </div>
         </div>
 
@@ -64,12 +88,18 @@
         <form
             method="POST"
             action="/delete/{{ customer.id }}"
-            onsubmit="return confirm('آیا از حذف «{{ customer.full_name }}» اطمینان دارید؟');"
+            id="delete-form"
             style="margin: 0"
         >
-            <button type="submit" class="btn btn-danger">
-                <span>🗑️</span>
-                <span>حذف</span>
+            <button type="submit" class="btn btn-danger" id="delete-btn">
+                <span class="btn-content">
+                    <span>🗑️</span>
+                    <span>حذف</span>
+                </span>
+                <span class="btn-loading" style="display: none">
+                    <span class="spinner"></span>
+                    <span>در حال حذف...</span>
+                </span>
             </button>
         </form>
 
@@ -79,4 +109,34 @@
         </a>
     </div>
 </div>
+
+<script>
+    // Delete form handling
+    const deleteForm = document.getElementById("delete-form");
+    const deleteBtn = document.getElementById("delete-btn");
+    let isDeleting = false;
+
+    deleteForm.addEventListener("submit", function (e) {
+        // Prevent multiple submissions
+        if (isDeleting) {
+            e.preventDefault();
+            return;
+        }
+
+        // Confirm deletion
+        if (!confirm("آیا از حذف «{{ customer.full_name }}» اطمینان دارید؟")) {
+            e.preventDefault();
+            return;
+        }
+
+        // Mark as deleting
+        isDeleting = true;
+
+        // Update button state
+        deleteBtn.disabled = true;
+        deleteBtn.classList.add("btn-loading-state");
+        deleteBtn.querySelector(".btn-content").style.display = "none";
+        deleteBtn.querySelector(".btn-loading").style.display = "flex";
+    });
+</script>
 {% endblock %}

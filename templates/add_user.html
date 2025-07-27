@@ -5,7 +5,7 @@ block content %}
 </div>
 
 <div class="card">
-    <form method="POST" action="/users/add">
+    <form method="POST" action="/users/add" id="user-form">
         <div class="form-group">
             <label for="full_name" class="form-label">نام کامل *</label>
             <input
@@ -74,13 +74,29 @@ block content %}
                 type="submit"
                 class="btn btn-primary btn-lg"
                 style="flex: 1"
+                id="submit-btn"
             >
-                <span>✅</span>
-                <span>ایجاد کاربر</span>
+                <span class="btn-content">
+                    <span class="btn-icon">✅</span>
+                    <span class="btn-text">ایجاد کاربر</span>
+                </span>
+                <span class="btn-loading" style="display: none">
+                    <span class="spinner"></span>
+                    <span>در حال ایجاد...</span>
+                </span>
             </button>
-            <a href="/users" class="btn btn-ghost btn-lg"> انصراف </a>
+            <a href="/users" class="btn btn-ghost btn-lg" id="cancel-btn">
+                انصراف
+            </a>
         </div>
     </form>
+
+    <div class="form-overlay" id="form-overlay" style="display: none">
+        <div class="overlay-content">
+            <div class="spinner-large"></div>
+            <p>در حال ایجاد کاربر جدید...</p>
+        </div>
+    </div>
 </div>
 
 <div
@@ -101,4 +117,99 @@ block content %}
         <li>به کاربران توصیه کنید رمز عبور پیش‌فرض را تغییر دهند</li>
     </ul>
 </div>
+
+<script>
+    // Form submission handling
+    const form = document.getElementById("user-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const cancelBtn = document.getElementById("cancel-btn");
+    const formOverlay = document.getElementById("form-overlay");
+    let isSubmitting = false;
+
+    // Handle form submission
+    form.addEventListener("submit", function (e) {
+        // Prevent multiple submissions
+        if (isSubmitting) {
+            e.preventDefault();
+            return;
+        }
+
+        // Mark as submitting
+        isSubmitting = true;
+
+        // Update button state
+        submitBtn.disabled = true;
+        submitBtn.classList.add("btn-loading-state");
+        submitBtn.querySelector(".btn-content").style.display = "none";
+        submitBtn.querySelector(".btn-loading").style.display = "flex";
+
+        // Disable cancel button
+        cancelBtn.classList.add("btn-disabled");
+        cancelBtn.style.pointerEvents = "none";
+
+        // Show overlay after a slight delay
+        setTimeout(() => {
+            if (isSubmitting) {
+                formOverlay.style.display = "flex";
+            }
+        }, 300);
+
+        // Disable all form inputs
+        const inputs = form.querySelectorAll("input, textarea, select");
+        inputs.forEach((input) => {
+            input.disabled = true;
+        });
+    });
+
+    // Reset form state if user navigates back
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            // Page was loaded from cache (back button)
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("btn-loading-state");
+            submitBtn.querySelector(".btn-content").style.display = "flex";
+            submitBtn.querySelector(".btn-loading").style.display = "none";
+            cancelBtn.classList.remove("btn-disabled");
+            cancelBtn.style.pointerEvents = "auto";
+            formOverlay.style.display = "none";
+
+            const inputs = form.querySelectorAll("input, textarea, select");
+            inputs.forEach((input) => {
+                input.disabled = false;
+            });
+        }
+    });
+
+    // Custom validation messages
+    document
+        .getElementById("username")
+        .addEventListener("invalid", function (e) {
+            e.preventDefault();
+            if (this.value.trim() === "") {
+                this.setCustomValidity("لطفاً نام کاربری را وارد کنید");
+            } else if (!this.checkValidity()) {
+                this.setCustomValidity(
+                    "نام کاربری فقط باید شامل حروف انگلیسی و اعداد باشد",
+                );
+            }
+        });
+
+    document.getElementById("username").addEventListener("input", function (e) {
+        this.setCustomValidity("");
+    });
+
+    document
+        .getElementById("password")
+        .addEventListener("invalid", function (e) {
+            e.preventDefault();
+            if (this.value.length < 6) {
+                this.setCustomValidity("رمز عبور باید حداقل 6 کاراکتر باشد");
+            }
+        });
+
+    document.getElementById("password").addEventListener("input", function (e) {
+        this.setCustomValidity("");
+    });
+</script>
 {% endblock %}
