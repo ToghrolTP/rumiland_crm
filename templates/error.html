@@ -188,33 +188,35 @@
         <div class="error-container">
             <div class="error-card">
                 <div class="error-header">
-                    {% if error_code %}
-                        {% match error_code.as_str() %}
-                            {% when "404" %}
+                    {% match error_code %}
+                        {% when Some with (code) %}
+                            {% if code == "404" %}
                                 <div class="error-icon error-icon-404">🔍</div>
-                            {% when "401" %}
+                            {% else if code == "401" %}
                                 <div class="error-icon error-icon-401">🔐</div>
-                            {% when "403" %}
+                            {% else if code == "403" %}
                                 <div class="error-icon error-icon-403">🚫</div>
-                            {% when "500" %}
+                            {% else if code == "500" %}
                                 <div class="error-icon error-icon-500">⚠️</div>
-                            {% when _ %}
+                            {% else %}
                                 <div class="error-icon error-icon-default">❌</div>
-                        {% endmatch %}
-                        <div class="error-code">خطای {{ error_code }}</div>
-                    {% else %}
-                        <div class="error-icon error-icon-default">⚠️</div>
-                    {% endif %}
+                            {% endif %}
+                            <div class="error-code">خطای {{ code }}</div>
+                        {% when None %}
+                            <div class="error-icon error-icon-default">⚠️</div>
+                    {% endmatch %}
                     
                     <h1 class="error-title">{{ title }}</h1>
                     <p class="error-message">{{ message }}</p>
                 </div>
                 
-                {% if details %}
-                <div class="error-details">
-                    <p>{{ details }}</p>
-                </div>
-                {% endif %}
+                {% match details %}
+                    {% when Some with (detail_text) %}
+                        <div class="error-details">
+                            <p>{{ detail_text }}</p>
+                        </div>
+                    {% when None %}
+                {% endmatch %}
                 
                 {% if !suggestions.is_empty() %}
                 <div class="error-suggestions">
@@ -228,25 +230,34 @@
                 {% endif %}
                 
                 <div class="error-illustration">
-                    {% if error_code %}
-                        {{ error_code }}
-                    {% else %}
-                        !
-                    {% endif %}
+                    {% match error_code %}
+                        {% when Some with (code) %}
+                            {{ code }}
+                        {% when None %}
+                            !
+                    {% endmatch %}
                 </div>
                 
                 <div class="error-actions">
-                    {% if error_code == Some("401".to_string()) %}
-                        <a href="/login" class="btn btn-primary">
-                            <span>🔐</span>
-                            <span>ورود به سیستم</span>
-                        </a>
-                    {% else %}
-                        <a href="{{ home_url }}" class="btn btn-primary">
-                            <span>🏠</span>
-                            <span>صفحه اصلی</span>
-                        </a>
-                    {% endif %}
+                    {% match error_code %}
+                        {% when Some with (code) %}
+                            {% if code == "401" %}
+                                <a href="/login" class="btn btn-primary">
+                                    <span>🔐</span>
+                                    <span>ورود به سیستم</span>
+                                </a>
+                            {% else %}
+                                <a href="{{ home_url }}" class="btn btn-primary">
+                                    <span>🏠</span>
+                                    <span>صفحه اصلی</span>
+                                </a>
+                            {% endif %}
+                        {% when None %}
+                            <a href="{{ home_url }}" class="btn btn-primary">
+                                <span>🏠</span>
+                                <span>صفحه اصلی</span>
+                            </a>
+                    {% endmatch %}
                     
                     {% if back_url.starts_with("javascript:") %}
                         <button type="button" class="btn btn-ghost" onclick="{{ back_url }}">

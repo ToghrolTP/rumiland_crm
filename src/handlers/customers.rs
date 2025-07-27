@@ -59,6 +59,7 @@ pub async fn show_add_form(
     let template = AddTemplate {
         active_page: "add",
         current_user,
+        flash_message: None,
     };
     
     Ok(Html(template.render()?))
@@ -104,7 +105,8 @@ pub async fn add_customer(
     form.notes = form.notes.trim().to_string();
     
     // Check for duplicate email
-    let existing = sqlx::query!("SELECT id FROM customers WHERE email = ?", form.email)
+    let existing: Option<(i64,)> = sqlx::query_as("SELECT id FROM customers WHERE email = ?")
+        .bind(&form.email)
         .fetch_optional(&pool)
         .await?;
         

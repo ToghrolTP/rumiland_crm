@@ -1,8 +1,7 @@
 use axum::{
     extract::State,
-    http::StatusCode,
     middleware::Next,
-    response::{IntoResponse, Response},
+    response::Response,
 };
 use axum_extra::extract::CookieJar;
 use sqlx::{Pool, Sqlite};
