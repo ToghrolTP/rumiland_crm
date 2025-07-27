@@ -1,5 +1,5 @@
-use askama::Template;
 use crate::models::{Customer, User};
+use askama::Template;
 
 /// Customer list page template
 #[derive(Template)]
@@ -8,6 +8,7 @@ pub struct ListTemplate {
     pub customers: Vec<Customer>,
     pub active_page: &'static str,
     pub current_user: Option<User>,
+    pub flash_message: Option<String>,
 }
 
 /// Add customer page template
@@ -16,6 +17,8 @@ pub struct ListTemplate {
 pub struct AddTemplate {
     pub active_page: &'static str,
     pub current_user: Option<User>,
+    pub flash_message: Option<String>,
+    // pub batch_count: i32,
 }
 
 /// Customer detail page template
@@ -25,6 +28,7 @@ pub struct DetailTemplate {
     pub customer: Customer,
     pub active_page: &'static str,
     pub current_user: Option<User>,
+    pub flash_message: Option<String>,
 }
 
 /// Edit customer page template

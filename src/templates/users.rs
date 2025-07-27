@@ -1,5 +1,5 @@
-use askama::Template;
 use crate::models::User;
+use askama::Template;
 
 /// User list page template
 #[derive(Template)]
@@ -8,6 +8,7 @@ pub struct UsersTemplate {
     pub users: Vec<User>,
     pub current_user: Option<User>,
     pub active_page: &'static str,
+    pub flash_message: Option<String>,
 }
 
 /// Add user page template
