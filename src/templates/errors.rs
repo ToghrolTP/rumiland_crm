@@ -13,21 +13,6 @@ pub struct ErrorTemplate {
     pub home_url: String,
 }
 
-/// Network error page template
-#[derive(Template)]
-#[template(path = "network_error.html")]
-pub struct NetworkErrorTemplate {
-    pub title: String,
-    pub message: String,
-}
-
-/// Form validation error template (partial)
-#[derive(Template)]
-#[template(path = "form_errors.html")]
-pub struct FormErrorsTemplate {
-    pub errors: Vec<FieldError>,
-}
-
 #[derive(Clone)]
 pub struct FieldError {
     pub field_name: String,

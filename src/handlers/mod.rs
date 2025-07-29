@@ -1,6 +1,5 @@
 pub mod auth;
 pub mod customers;
-pub mod health;
 pub mod users;
 
 use axum::Router;
@@ -8,13 +7,12 @@ use sqlx::{Pool, Sqlite};
 
 /// Configure all routes for the application
 pub fn configure_routes(pool: Pool<Sqlite>) -> Router {
-    use axum::routing::{get, post, head};
+    use axum::routing::{get, post};
     use tower_http::services::ServeDir;
     
     // Public routes (no auth required)
     let public_routes = Router::new()
         .route("/login", get(auth::show_login).post(auth::do_login))
-        .route("/api/health", head(health::health_check))
         .nest_service("/static", ServeDir::new("static"));
     
     // Protected routes (auth required)

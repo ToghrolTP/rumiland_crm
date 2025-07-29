@@ -25,11 +25,6 @@ pub struct CustomerForm {
 }
 
 impl Customer {
-    /// Check if notes field is empty
-    pub fn has_notes(&self) -> bool {
-        !self.notes.trim().is_empty()
-    }
-
     /// Format phone number for display using the phone utils
     pub fn formatted_phone(&self) -> String {
         crate::utils::phone::format_phone_for_display(&self.phone_number)
