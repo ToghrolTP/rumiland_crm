@@ -48,6 +48,23 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     )
     .execute(pool)
     .await?;
+    
+    // Create products table
+    sqlx::query(
+        r#"
+        CREATE TABLE IF NOT EXISTS products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT NOT NULL,
+            price REAL NOT NULL,
+            stock INTEGER NOT NULL,
+            image_url TEXT,
+            created_at TEXT DEFAULT (datetime('now'))
+        )
+        "#,
+    )
+    .execute(pool)
+    .await?;
 
     // Create indexes for better performance
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)")
@@ -59,6 +76,10 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
         .await?;
 
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
+        .execute(pool)
+        .await?;
+    
+    sqlx::query("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)")
         .execute(pool)
         .await?;
 
