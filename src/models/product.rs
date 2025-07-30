@@ -22,15 +22,22 @@ pub struct ProductForm {
     pub stock: i32,
 }
 
-
 impl Product {
     // ... (existing functions remain the same)
     /// Helper function to convert English digits to Persian
     fn to_persian_digits(s: &str) -> String {
         s.chars()
             .map(|c| match c {
-                '0' => '۰', '1' => '۱', '2' => '۲', '3' => '۳', '4' => '۴',
-                '5' => '۵', '6' => '۶', '7' => '۷', '8' => '۸', '9' => '۹',
+                '0' => '۰',
+                '1' => '۱',
+                '2' => '۲',
+                '3' => '۳',
+                '4' => '۴',
+                '5' => '۵',
+                '6' => '۶',
+                '7' => '۷',
+                '8' => '۸',
+                '9' => '۹',
                 _ => c,
             })
             .collect()

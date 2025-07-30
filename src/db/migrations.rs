@@ -48,7 +48,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     )
     .execute(pool)
     .await?;
-    
+
     // Create products table
     sqlx::query(
         r#"
@@ -78,7 +78,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
         .execute(pool)
         .await?;
-    
+
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)")
         .execute(pool)
         .await?;
