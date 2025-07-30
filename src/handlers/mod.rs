@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod catalog;
 pub mod customers;
 pub mod users;
 
@@ -23,6 +24,11 @@ pub fn configure_routes(pool: Pool<Sqlite>) -> Router {
         .route("/delete/:id", post(customers::delete_customer))
         .route("/edit/:id", get(customers::show_edit_form).post(customers::update_customer))
         .route("/logout", post(auth::logout))
+        
+        // Catalog routes
+        .route("/catalog", get(catalog::show_catalog))
+        .route("/catalog/add", get(catalog::show_add_product_form).post(catalog::add_product))
+
         // Admin only routes
         .route("/users", get(users::list_users))
         .route("/users/add", get(users::show_add_user_form).post(users::add_user))
