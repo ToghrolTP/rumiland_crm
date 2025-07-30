@@ -746,8 +746,12 @@ td a:hover {
    =========================== */
 /* Spinner animation */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Small spinner for buttons */
@@ -824,7 +828,8 @@ td a:hover {
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 1;
     }
     50% {
@@ -872,11 +877,23 @@ select[style*="pointer-events: none"] {
 }
 
 @keyframes shakeIn {
-    0% { transform: translateX(-10px); opacity: 0; }
-    25% { transform: translateX(10px); }
-    50% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-    100% { transform: translateX(0); opacity: 1; }
+    0% {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+    25% {
+        transform: translateX(10px);
+    }
+    50% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .form-errors-header {
@@ -1047,7 +1064,7 @@ select[style*="pointer-events: none"] {
 }
 
 .phone-number {
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
     letter-spacing: 0.05em;
     direction: ltr;
     display: inline-block;
@@ -1073,7 +1090,7 @@ select[style*="pointer-events: none"] {
 }
 
 .email-address {
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
     direction: ltr;
     display: inline-block;
 }
@@ -1148,29 +1165,29 @@ select[style*="pointer-events: none"] {
         margin-left: var(--space-md);
         margin-right: var(--space-md);
     }
-    
+
     .form-input {
         font-size: 16px; /* Prevents zoom on iOS */
     }
-    
+
     .area-codes {
         gap: var(--space-sm);
         font-size: 0.75rem;
     }
-    
+
     /* Loading states on mobile */
     .form-overlay {
         padding: var(--space-md);
     }
-    
+
     .overlay-content {
         padding: var(--space-lg);
     }
-    
+
     .overlay-content p {
         font-size: 1rem;
     }
-    
+
     .spinner-large {
         width: 2.5rem;
         height: 2.5rem;
