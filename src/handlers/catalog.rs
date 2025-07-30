@@ -26,7 +26,7 @@ pub async fn show_catalog(
 
     // Check for flash message
     let flash_message = jar.get("flash_message").map(|c| c.value().to_string());
-    
+
     // Remove flash message cookie after reading
     let jar = if flash_message.is_some() {
         jar.remove(Cookie::from("flash_message"))
@@ -48,7 +48,6 @@ pub async fn show_catalog(
 
     Ok((jar, Html(template.render()?)))
 }
-
 
 /// Show the form to add a new product
 pub async fn show_add_product_form(
@@ -81,13 +80,16 @@ pub async fn add_product(
     println!("📦 New product added to database: {}", form.name);
 
     // Set a flash message to confirm the action
-    let flash_cookie = Cookie::build(("flash_message", format!("محصول «{}» با موفقیت اضافه شد ✅", form.name)))
-        .path("/")
-        .same_site(SameSite::Lax)
-        .http_only(true)
-        .max_age(cookie::time::Duration::seconds(60))
-        .build();
-    
+    let flash_cookie = Cookie::build((
+        "flash_message",
+        format!("محصول «{}» با موفقیت اضافه شد ✅", form.name),
+    ))
+    .path("/")
+    .same_site(SameSite::Lax)
+    .http_only(true)
+    .max_age(cookie::time::Duration::seconds(60))
+    .build();
+
     let jar = jar.add(flash_cookie);
 
     Ok((jar, Redirect::to("/catalog")))
