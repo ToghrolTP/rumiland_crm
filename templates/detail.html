@@ -58,6 +58,44 @@
                 </a>
             </div>
         </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">سمت شغلی</div>
+            <div class="detail-value">
+                {% if customer.job_title.is_empty() %}
+                    <span class="text-muted">ثبت نشده</span>
+                {% else %}
+                    {{ customer.job_title }}
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-lable">شهر</div>
+            <div class="detail-value">
+                {% match customer.city.as_str() %}
+                {% when "Hidaj" %}
+                    هیدج
+                {% when "Khorramdarreh" %}
+                خرم‌دره
+                {% when "Abhar" %}
+                    ابهر
+                {% else %}
+                    <span class="text-muted">ثبت نشده</span>
+                {% endmatch %}
+            </div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">آدرس</div>
+            <div class="detail-value">
+                {% if customer.address.is_empty() %}
+                    <span class="text-muted">ثبت نشده</span>
+                {% else %}
+                    {{ customer.address }}
+                {% endif %}
+            </div>
+        </div>
 
         <div class="detail-row">
             <div class="detail-label">یادداشت‌ها</div>

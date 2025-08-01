@@ -53,26 +53,44 @@ content %}
         <thead>
             <tr>
                 <th>نام</th>
-                <th>شرکت</th>
-                <th>ایمیل</th>
+                <th >شرکت</th>
+                <!-- <th>ایمیل</th> -->
                 <th>تلفن</th>
+                <th>سمت شغلی</th>
+                <th>آدرس</th>
                 <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
             {% for customer in customers %}
-            <tr>
+            <tr">
                 <td>
                     <strong>{{ customer.full_name }}</strong>
                 </td>
-                <td>{{ customer.company }}</td>
-                <td>
+                <td class="auto-fit">{{ customer.company }}</td>
+                <!-- <td>
                     <a href="mailto:{{ customer.email }}" class="text-small">
                         {{ customer.email }}
                     </a>
-                </td>
-                <td>
+                </td> -->
+                <td class="auto-fit">
                     <span class="phone-number text-small">{{ customer.formatted_phone() }}</span>
+                </td>
+                <td class="auto-fit">
+                    {% if customer.job_title.is_empty() %}
+                        <span class="text-muted">--</span>
+                    {% else %}
+                        {{ customer.job_title }}
+                    {% endif %}
+                </td>
+                <td class="auto-fit">
+                    {% if customer.address.is_empty() %}
+                        <span class="text-muted">--</span>
+                    {% else if customer.city.is_empty() %}
+                        {{ customer.address }}
+                    {% else %}
+                        {{ customer.city }} - {{ customer.address }}
+                    {% endif %}
                 </td>
                 <td>
                     <div class="table-actions">
