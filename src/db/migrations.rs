@@ -12,7 +12,10 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
             company TEXT NOT NULL,
             email TEXT NOT NULL,
             phone_number TEXT NOT NULL,
-            notes TEXT NOT NULL
+            city TEXT NOT NULL DEFAULT '',
+            address TEXT NOT NULL DEFAULT '',
+            notes TEXT NOT NULL,
+            job_title TEXT NOT NULL DEFAULT ''
         )
         "#,
     )
@@ -82,6 +85,8 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)")
         .execute(pool)
         .await?;
+    
+    let _ = sqlx::query("ALTER TABLE customers ADD COLUMN city TEXT NOT NULL DEFAULT ''").execute(pool).await;
 
     println!("✅ Database migrations completed successfully");
     Ok(())
