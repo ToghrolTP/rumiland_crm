@@ -312,7 +312,7 @@ p {
 .table-container {
     background-color: var(--bg-card);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow: auto;
     box-shadow: var(--shadow-sm);
 }
 
@@ -341,6 +341,11 @@ td {
     text-align: right;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-secondary);
+}
+
+.auto-fit {
+    width: 1%;
+    white-space: nowrap;
 }
 
 tbody tr {
