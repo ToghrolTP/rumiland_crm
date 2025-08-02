@@ -1,6 +1,9 @@
 use askama::Template;
 use axum::{
-    extract::{Path, State}, http::method, response::{Html, IntoResponse, Redirect}, Form
+    extract::{Path, State},
+    http::method,
+    response::{Html, IntoResponse, Redirect},
+    Form,
 };
 use axum_extra::extract::{
     cookie::{Cookie, SameSite},
@@ -16,8 +19,11 @@ use crate::{
     utils::{
         email::{normalize_email, validate_email},
         phone::normalize_phone_number,
+        localization::persian_to_english_numbers,
     },
 };
+
+use parsidate::ParsiDate;
 
 /// List all customers
 pub async fn list_customers(
@@ -74,7 +80,6 @@ pub async fn add_customer(
     jar: CookieJar,
     Form(mut form): Form<CustomerForm>,
 ) -> AppResult<impl IntoResponse> {
-    
     // Trim all fields
     form.full_name = form.full_name.trim().to_string();
     form.company = form.company.trim().to_string();
@@ -83,7 +88,7 @@ pub async fn add_customer(
     form.address = form.address.trim().to_string();
     form.city = form.city.trim().to_string();
     form.settlement_method = form.settlement_method.trim().to_string();
-    
+
     // Validate required fields
     if form.full_name.trim().is_empty() {
         return Err(AppError::BadRequest(
@@ -109,27 +114,50 @@ pub async fn add_customer(
         _ => e,
     })?;
     form.email = normalize_email(&form.email);
-    
+
     // Validate sales_count
     if form.sales_count < 0 {
         return Err(AppError::BadRequest(
             "تعداد فروش نمیتواند منفی باشد".to_string(),
         ));
     }
-    
+
     // Validate settlement_method
     let valid_methods: Vec<String> = crate::models::SettlementMethod::all_methods()
         .into_iter()
         .map(|method| method.as_str().to_string())
         .collect();
-    
+
     let method_str = form.settlement_method;
     if !valid_methods.contains(&method_str.to_string()) && !method_str.is_empty() {
         return Err(AppError::BadRequest(
-            "نحوه تسویه انتخاب شده معتبر نیست".to_string()
+            "نحوه تسویه انتخاب شده معتبر نیست".to_string(),
         ));
     }
-    
+
+    // Validate purchase_date
+    let purchase_date_gregorian = if form.purchase_date.is_empty() {
+        "".to_string()
+    } else {
+        let normalized_date = persian_to_english_numbers(&form.purchase_date);
+        
+        match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
+            Ok(parsi_date) => {
+                match parsi_date.to_gregorian() {
+                    Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
+                    Err(_) => {
+                        return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
+                    }
+                }
+            }
+            Err(_) => {
+                return Err(AppError::BadRequest(
+                    "فرمت تاریخ خرید معتبر نیست".to_string(),
+                ));
+            }
+        }
+    };
+
     // Validate city
     let city_str = form.city;
 
@@ -155,8 +183,8 @@ pub async fn add_customer(
     }
 
     sqlx::query(
-        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, settlement_method, job_title, city, address, notes)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, settlement_method, purchase_date, job_title, city, address, notes)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&form.full_name)
     .bind(&form.company)
@@ -164,6 +192,7 @@ pub async fn add_customer(
     .bind(&form.phone_number)
     .bind(&form.sales_count)
     .bind(method_str)
+    .bind(&purchase_date_gregorian)
     .bind(&form.job_title)
     .bind(city_str)
     .bind(&form.address)
@@ -275,26 +304,48 @@ pub async fn update_customer(
             "شهر انتخاب شده معتبر نیست".to_string(),
         ));
     }
-    
+
     // Validate sales_count
     if form.sales_count < 0 {
         return Err(AppError::BadRequest(
             "تعداد فروش نمیتواند منفی باشد".to_string(),
         ));
     }
-    
+
     // Validate settlement_method
     let valid_methods: Vec<String> = crate::models::SettlementMethod::all_methods()
         .into_iter()
         .map(|method| method.as_str().to_string())
         .collect();
-    
+
     let method_str = form.settlement_method;
     if !valid_methods.contains(&method_str.to_string()) && !method_str.is_empty() {
         return Err(AppError::BadRequest(
-            "نحوه تسویه انتخاب شده معتبر نیست".to_string()
+            "نحوه تسویه انتخاب شده معتبر نیست".to_string(),
         ));
     }
+
+    // Validate purchase_date
+    let purchase_date_gregorian = if form.purchase_date.is_empty() {
+        "".to_string()
+    } else {
+        let normalized_date = persian_to_english_numbers(&form.purchase_date);
+        match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
+            Ok(parsi_date) => {
+                match parsi_date.to_gregorian() {
+                    Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
+                    Err(_) => {
+                        return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
+                    }
+                }
+            }
+            Err(_) => {
+                return Err(AppError::BadRequest(
+                    "فرمت تاریخ خرید معتبر نیست".to_string(),
+                ));
+            }
+        }
+    };
 
     // Validate and normalize email
     form.email = validate_email(&form.email)?;
@@ -302,7 +353,7 @@ pub async fn update_customer(
 
     let result = sqlx::query(
         "UPDATE customers
-         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, settlement_method = ?, job_title = ?, city = ?, address = ?, notes = ?
+         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, settlement_method = ?, purchase_date = ?, job_title = ?, city = ?, address = ?, notes = ?
          WHERE id = ?"
     )
     .bind(&form.full_name)
@@ -311,6 +362,7 @@ pub async fn update_customer(
     .bind(&form.phone_number)
     .bind(&form.sales_count)
     .bind(method_str)
+    .bind(&purchase_date_gregorian)
     .bind(&form.job_title)
     .bind(city_str)
     .bind(&form.address)

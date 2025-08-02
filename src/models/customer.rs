@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use parsidate::ParsiDate;
 
 /// Customer entity representing a CRM customer
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
@@ -11,6 +12,7 @@ pub struct Customer {
     pub phone_number: String,
     pub sales_count: i64,
     pub settlement_method: String,
+    pub purchase_date: String,
     pub job_title: String,
     pub city: String,
     pub address: String,
@@ -26,6 +28,7 @@ pub struct CustomerForm {
     pub phone_number: String,
     pub sales_count: i64,
     pub settlement_method: String,
+    pub purchase_date: String,
     pub job_title: String,
     pub city: String,
     pub address: String,
@@ -44,6 +47,24 @@ impl Customer {
     
     pub fn settlement_method_display_name(&self) -> String {
         SettlementMethod::from_str(&self.settlement_method).display_name().to_string()
+    }
+    
+    pub fn purchase_date_shamsi(&self) -> String {
+        if self.purchase_date.is_empty() {
+            return "".to_string();
+        }
+        
+        match chrono::NaiveDate::parse_from_str(&self.purchase_date, "%Y-%m-%d") {
+            Ok(gregorian_date) => {
+                ParsiDate::from_gregorian(gregorian_date)
+                    .unwrap()
+                    .format("%Y/%m/%d")
+                    .to_string()
+            }
+            Err(_) => {
+                self.purchase_date.clone()
+            }
+        }
     }
 }
 
