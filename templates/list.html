@@ -56,6 +56,8 @@ content %}
                 <th >شرکت</th>
                 <!-- <th>ایمیل</th> -->
                 <th>تلفن</th>
+                <th>تعداد فروش</th>
+                <th>نحوه تسویه</th>
                 <th>سمت شغلی</th>
                 <th>آدرس</th>
                 <th>عملیات</th>
@@ -65,7 +67,7 @@ content %}
             {% for customer in customers %}
             <tr">
                 <td>
-                    <strong>{{ customer.full_name }}</strong>
+                    <strong><a href="/customer/{{ customer.id }}">{{ customer.full_name }}</a></strong>
                 </td>
                 <td class="auto-fit">{{ customer.company }}</td>
                 <!-- <td>
@@ -76,6 +78,8 @@ content %}
                 <td class="auto-fit">
                     <span class="phone-number text-small">{{ customer.formatted_phone() }}</span>
                 </td>
+                <td class="auto-fit">{{ customer.sales_count }}</td>
+                <td class="auto-fit">{{ customer.settlement_method_display_name() }}</td>
                 <td class="auto-fit">
                     {% if customer.job_title.is_empty() %}
                         <span class="text-muted">--</span>
@@ -89,7 +93,7 @@ content %}
                     {% else if customer.city.is_empty() %}
                         {{ customer.address }}
                     {% else %}
-                        {{ customer.city }} - {{ customer.address }}
+                        {{ customer.city_display_name() }} - {{ customer.address }}
                     {% endif %}
                 </td>
                 <td>
