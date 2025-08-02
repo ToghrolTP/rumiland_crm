@@ -105,6 +105,34 @@ block content %}
         </div>
 
         <div class="form-group">
+            <label for="sales_count" class="form-label">تعداد فروش</label>
+            <input
+                type="number"
+                id="sales_count"
+                name="sales_count"
+                class="form-input"
+                value="0"
+                min="0"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="settlement_method" class="form-label">نحوه تسویه</label>
+            <select
+                id="settlement_method"
+                name="settlement_method"
+                class="form-input"
+            >
+                <option value="">انتخاب کنید</option>
+                {% for method in methods %}
+                <option value="{{ method.as_str() }}">
+                    {{ method.display_name() }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="job_title" class="form_label">سمت شغلی</label>
             <input
                 type="text"
@@ -114,14 +142,16 @@ block content %}
                 placeholder="مثال: مدیر فروش"
             />
         </div>
-        
+
         <div class="form-group">
             <div for="city" class="form-label">شهر</div>
             <select name="city" id="city" class="form-input">
                 <option value="">انتخاب کنید</option>
-                <option value="Hidaj">هیدج</option>
-                <option value="Khorramdarreh">خرمدره</option>
-                <option value="Abhar">ابهر</option>
+                {% for city in cities %}
+                <option value="{{ city.as_str() }}">
+                    {{ city.display_name() }}
+                </option>
+                {% endfor %}
             </select>
         </div>
 

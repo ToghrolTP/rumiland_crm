@@ -1,8 +1,6 @@
 use askama::Template;
 use axum::{
-    extract::{Path, State},
-    response::{Html, IntoResponse, Redirect},
-    Form,
+    extract::{Path, State}, http::method, response::{Html, IntoResponse, Redirect}, Form
 };
 use axum_extra::extract::{
     cookie::{Cookie, SameSite},
@@ -63,6 +61,8 @@ pub async fn show_add_form(
         active_page: "add",
         current_user,
         flash_message: None,
+        cities: crate::models::City::all_cities(),
+        methods: crate::models::SettlementMethod::all_methods(),
     };
 
     Ok(Html(template.render()?))
@@ -74,6 +74,16 @@ pub async fn add_customer(
     jar: CookieJar,
     Form(mut form): Form<CustomerForm>,
 ) -> AppResult<impl IntoResponse> {
+    
+    // Trim all fields
+    form.full_name = form.full_name.trim().to_string();
+    form.company = form.company.trim().to_string();
+    form.notes = form.notes.trim().to_string();
+    form.job_title = form.job_title.trim().to_string();
+    form.address = form.address.trim().to_string();
+    form.city = form.city.trim().to_string();
+    form.settlement_method = form.settlement_method.trim().to_string();
+    
     // Validate required fields
     if form.full_name.trim().is_empty() {
         return Err(AppError::BadRequest(
@@ -99,16 +109,36 @@ pub async fn add_customer(
         _ => e,
     })?;
     form.email = normalize_email(&form.email);
+    
+    // Validate sales_count
+    if form.sales_count < 0 {
+        return Err(AppError::BadRequest(
+            "تعداد فروش نمیتواند منفی باشد".to_string(),
+        ));
+    }
+    
+    // Validate settlement_method
+    let valid_methods: Vec<String> = crate::models::SettlementMethod::all_methods()
+        .into_iter()
+        .map(|method| method.as_str().to_string())
+        .collect();
+    
+    let method_str = form.settlement_method;
+    if !valid_methods.contains(&method_str.to_string()) && !method_str.is_empty() {
+        return Err(AppError::BadRequest(
+            "نحوه تسویه انتخاب شده معتبر نیست".to_string()
+        ));
+    }
+    
+    // Validate city
+    let city_str = form.city;
 
-    // Trim all fields
-    form.full_name = form.full_name.trim().to_string();
-    form.company = form.company.trim().to_string();
-    form.notes = form.notes.trim().to_string();
-    form.job_title = form.job_title.trim().to_string();
-    form.address = form.address.trim().to_string();
+    let valid_cities: Vec<String> = crate::models::City::all_cities()
+        .into_iter()
+        .map(|city| city.as_str().to_string())
+        .collect();
 
-    let city_str = form.city.trim();
-    if !["", "Hidaj", "Khorramdarrreh", "Abhar"].contains(&city_str) {
+    if !valid_cities.contains(&city_str.to_string()) && !city_str.is_empty() {
         return Err(AppError::BadRequest(
             "شهر انتخاب شده معتبر نیست".to_string(),
         ));
@@ -125,13 +155,15 @@ pub async fn add_customer(
     }
 
     sqlx::query(
-        "INSERT INTO customers (full_name, company, email, phone_number, job_title, city, address, notes)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, settlement_method, job_title, city, address, notes)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&form.full_name)
     .bind(&form.company)
     .bind(&form.email)
     .bind(&form.phone_number)
+    .bind(&form.sales_count)
+    .bind(method_str)
     .bind(&form.job_title)
     .bind(city_str)
     .bind(&form.address)
@@ -213,6 +245,8 @@ pub async fn show_edit_form(
         customer,
         active_page: "",
         current_user,
+        cities: crate::models::City::all_cities(),
+        methods: crate::models::SettlementMethod::all_methods(),
     };
 
     Ok(Html(template.render()?))
@@ -228,10 +262,37 @@ pub async fn update_customer(
     // Validate and normalize phone number
     form.phone_number = normalize_phone_number(&form.phone_number)?;
 
+    // Validate cities
+    let valid_cities: Vec<String> = crate::models::City::all_cities()
+        .into_iter()
+        .map(|city| city.as_str().to_string())
+        .collect();
+
     let city_str = form.city.trim();
-    if !["", "Hidaj", "Khorramdarreh", "Abhar"].contains(&city_str) {
+
+    if !valid_cities.contains(&city_str.to_string()) && !city_str.is_empty() {
         return Err(AppError::BadRequest(
             "شهر انتخاب شده معتبر نیست".to_string(),
+        ));
+    }
+    
+    // Validate sales_count
+    if form.sales_count < 0 {
+        return Err(AppError::BadRequest(
+            "تعداد فروش نمیتواند منفی باشد".to_string(),
+        ));
+    }
+    
+    // Validate settlement_method
+    let valid_methods: Vec<String> = crate::models::SettlementMethod::all_methods()
+        .into_iter()
+        .map(|method| method.as_str().to_string())
+        .collect();
+    
+    let method_str = form.settlement_method;
+    if !valid_methods.contains(&method_str.to_string()) && !method_str.is_empty() {
+        return Err(AppError::BadRequest(
+            "نحوه تسویه انتخاب شده معتبر نیست".to_string()
         ));
     }
 
@@ -241,13 +302,15 @@ pub async fn update_customer(
 
     let result = sqlx::query(
         "UPDATE customers
-         SET full_name = ?, company = ?, email = ?, phone_number = ?, job_title = ?, city = ?, address = ?, notes = ?
+         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, settlement_method = ?, job_title = ?, city = ?, address = ?, notes = ?
          WHERE id = ?"
     )
     .bind(&form.full_name)
     .bind(&form.company)
     .bind(&form.email)
     .bind(&form.phone_number)
+    .bind(&form.sales_count)
+    .bind(method_str)
     .bind(&form.job_title)
     .bind(city_str)
     .bind(&form.address)

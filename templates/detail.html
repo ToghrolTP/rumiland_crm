@@ -60,6 +60,16 @@
         </div>
         
         <div class="detail-row">
+            <div class="detail-label">تعداد فروش</div>
+            <div class="detail-value">{{ customer.sales_count }}</div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">نحوه تسویه</div>
+            <div class="detail-value">{{ customer.settlement_method_display_name() }}</div>
+        </div>
+        
+        <div class="detail-row">
             <div class="detail-label">سمت شغلی</div>
             <div class="detail-value">
                 {% if customer.job_title.is_empty() %}
@@ -72,18 +82,7 @@
         
         <div class="detail-row">
             <div class="detail-lable">شهر</div>
-            <div class="detail-value">
-                {% match customer.city.as_str() %}
-                {% when "Hidaj" %}
-                    هیدج
-                {% when "Khorramdarreh" %}
-                خرم‌دره
-                {% when "Abhar" %}
-                    ابهر
-                {% else %}
-                    <span class="text-muted">ثبت نشده</span>
-                {% endmatch %}
-            </div>
+            <div class="detail-value">{{ customer.city_display_name() }}</div>
         </div>
         
         <div class="detail-row">

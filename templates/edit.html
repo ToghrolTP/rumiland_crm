@@ -107,6 +107,23 @@ endblock %} {% block content %}
                 شماره تلفن نامعتبر است
             </p>
         </div>
+        
+        <div class="form-group">
+            <label for="sales_count" class="form-label">تعداد فروش</label>
+            <input type="number" id="sales_count" name="sales_count" class="form-input" value="{{ customer.sales_count }}" min="0" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="settlement_method" class="form-label">نحوه تسویه</label>
+            <select id="settlement_method" name="settlement_method" class="form-input">
+                <option value="" {% if customer.settlement_method.is_empty() %}selected{% endif %}>انتخاب کنید</option>
+                {% for method_option in methods %}
+                    <option value="{{ method_option.as_str() }}" {% if customer.settlement_method == method_option.as_str() %}selected{% endif %}>
+                        {{ method_option.display_name() }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
         <div class="form-group">
             <label for="job_title" class="form-label">سمت شغلی</label>
@@ -123,9 +140,11 @@ endblock %} {% block content %}
             <label for="city" class="form-label">شهر</label>
             <select name="city" id="city" class="form-input">
                 <option value="" {% if customer.city.is_empty() %}selected{% endif %}>انتخاب کنید</option>
-                <option value="Hidaj" {% if customer.city == "Hidaj" %}selected{% endif %}>هیدج</option>
-                <option value="Khorramdarreh" {% if customer.city == "Khorramdarreh" %}selected{% endif %}>خرمدره</option>
-                <option value="Abhar" {% if customer.city == "Abhar" %}selected{% endif %}>ابهر</option>
+                {% for city_option in cities %}
+                    <option value="{{ city_option.as_str() }}" {% if customer.city == city_option.as_str() %}selected{% endif %}>
+                        {{ city_option.display_name() }}
+                    </option>
+                {% endfor %}
             </select>
         </div>
         
