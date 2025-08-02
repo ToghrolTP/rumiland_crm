@@ -58,6 +58,7 @@ content %}
                 <th>تلفن</th>
                 <th>تعداد فروش</th>
                 <th>نحوه تسویه</th>
+                <th>تاریخ خرید</th>
                 <th>سمت شغلی</th>
                 <th>آدرس</th>
                 <th>عملیات</th>
@@ -80,6 +81,13 @@ content %}
                 </td>
                 <td class="auto-fit">{{ customer.sales_count }}</td>
                 <td class="auto-fit">{{ customer.settlement_method_display_name() }}</td>
+                <td class="auto-fit">
+                    {% if customer.purchase_date.is_empty() %}
+                        <span class="text-muted">--</span>
+                    {% else %}
+                        {{ customer.purchase_date_shamsi() }}
+                    {% endif %}
+                </td>
                 <td class="auto-fit">
                     {% if customer.job_title.is_empty() %}
                         <span class="text-muted">--</span>

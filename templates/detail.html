@@ -70,6 +70,17 @@
         </div>
         
         <div class="detail-row">
+            <div class="detail-label">تاریخ خرید</div>
+            <div class="detail-value">
+                {% if customer.purchase_date.is_empty() %}
+                    <span class="text-muted">ثبت نشده</span>
+                {% else %}
+                    {{ customer.purchase_date_shamsi() }}
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="detail-row">
             <div class="detail-label">سمت شغلی</div>
             <div class="detail-value">
                 {% if customer.job_title.is_empty() %}

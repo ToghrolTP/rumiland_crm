@@ -1121,6 +1121,88 @@ select[style*="pointer-events: none"] {
 }
 
 /* ===========================
+   Persian Datepicker Overrides
+   =========================== */
+
+/* Main container - Change the font here! */
+.datepicker-plot-area {
+    font-family: "Vazirmatn", sans-serif !important; /* This changes the font */
+    width: 300px !important;
+    border: 1px solid #3c3836 !important;
+    border-radius: 5px !important;
+    background-color: #1d2021 !important;
+}
+
+.datepicker-plot-area .datepicker-navigator .pwt-btn-next,
+.datepicker-plot-area .datepicker-navigator .pwt-btn-switch,
+.datepicker-plot-area .datepicker-navigator .pwt-btn-prev {
+    background-color: rgb(50, 48, 47) !important;
+    color: #f9efc5 !important;
+}
+
+.datepicker-plot-area
+    .datepicker-day-view
+    .month-grid-box
+    .header
+    .header-row-cell {
+    color: #d6cdab;
+}
+
+.datepicker-plot-area .datepicker-day-view .table-days td span,
+.datepicker-plot-area .datepicker-year-view .year-item,
+.datepicker-plot-area .datepicker-month-view .month-item {
+    background-color: #1d2021 !important;
+    color: #ebdbb2 !important;
+}
+
+.datepicker-plot-area .datepicker-day-view .table-days td span.other-month {
+    color: #7c6f64 !important;
+}
+
+.datepicker-plot-area
+    .datepicker-day-view
+    .month-grid-box
+    .header
+    .header-row-cell {
+    color: #756d56 !important;
+}
+
+.datepicker-plot-area
+    .datepicker-day-view
+    .table-days
+    td.selected
+    span
+    .datepicker-plot-area
+    .datepicker-day-view
+    .table-days
+    td:hover,
+.datepicker-plot-area .datepicker-day-view .table-days td span:hover,
+.datepicker-plot-area .datepicker-year-view .year-item:hover,
+.datepicker-plot-area .datepicker-month-view .month-item:hover {
+    background-color: #458588 !important;
+    border-radius: 100px !important;
+}
+
+.datepicker-plot-area * {
+    color: #fff2bc !important;
+}
+
+/*.datepicker-plot-area
+    .datepicker-day-view
+    .table-days
+    td.selected
+    span
+    .datepicker-plot-area
+    .datepicker-day-view
+    .table-days
+    td,
+.datepicker-plot-area .datepicker-day-view .table-days td span:,
+.datepicker-plot-area .datepicker-year-view .year-item,
+.datepicker-plot-area .datepicker-month-view .month-item {
+    background-color: #458588 !important;
+}*/
+
+/* ===========================
    Responsive Design
    =========================== */
 @media (max-width: 768px) {
