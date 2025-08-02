@@ -133,7 +133,27 @@ block content %}
         </div>
 
         <div class="form-group">
-            <label for="job_title" class="form_label">سمت شغلی</label>
+            <label for="purchase_date" class="form_label">تاریخ خرید</label>
+            <input
+                type="text"
+                id="purchase_date"
+                name="purchase_date"
+                class="form-input"
+                autocomplete="off"/>
+        </div>
+        {% block extra_scripts %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#purchase_date").pDatepicker({
+                    format: 'YYYY/MM/DD',
+                    autoClose: true
+                });
+            });
+        </script>
+        {% endblock %}
+
+        <div class="form-group">
+            <label for="job_title" class="form-label">سمت شغلی</label>
             <input
                 type="text"
                 id="job_title"
