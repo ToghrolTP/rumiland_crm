@@ -14,6 +14,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
             phone_number TEXT NOT NULL,
             sales_count INTEGER NOT NULL DEFAULT 0,
             settlement_method TEXT NOT NULL DEFAULT '',
+            purchase_date TEXT NOT NULL DEFAULT '',
             city TEXT NOT NULL DEFAULT '',
             address TEXT NOT NULL DEFAULT '',
             notes TEXT NOT NULL,
@@ -102,6 +103,10 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
         sqlx::query("ALTER TABLE customers ADD COLUMN settlement_method TEXT NOT NULL DEFAULT ''")
             .execute(pool)
             .await;
+
+    let _ = sqlx::query("ALTER TABLE customers ADD COLUMN purchase_date TEXT NOT NULL DEFAULT ''")
+        .execute(pool)
+        .await;
 
     println!("✅ Database migrations completed successfully");
     Ok(())
