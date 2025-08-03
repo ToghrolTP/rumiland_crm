@@ -3,7 +3,6 @@ use axum::{
     http::StatusCode,
     response::{Html, IntoResponse, Response},
 };
-use xlsxwriter::XlsxError;
 use std::fmt;
 
 use crate::templates::errors::ErrorTemplate;

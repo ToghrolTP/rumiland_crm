@@ -13,13 +13,6 @@ pub struct ErrorTemplate {
     pub home_url: String,
 }
 
-#[derive(Clone)]
-pub struct FieldError {
-    pub field_name: String,
-    pub field_label: String,
-    pub message: String,
-}
-
 impl ErrorTemplate {
     /// Create error template for different scenarios
     pub fn for_not_found() -> Self {

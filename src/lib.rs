@@ -14,4 +14,4 @@ pub mod utils;
 // Re-export commonly used types
 pub use config::Config;
 pub use error::{AppError, AppResult};
-pub use models::{Customer, CustomerForm, LoginForm, User, UserForm, UserRole};
+pub use models::{Customer, CustomerForm, LoginForm, User, UserForm};

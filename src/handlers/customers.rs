@@ -4,12 +4,12 @@ use askama::Template;
 use axum::{
     body::Body,
     extract::{Path, State},
-    http::{header, method},
+    http::header,
     response::{Html, IntoResponse, Redirect, Response},
     Form,
 };
 
-use xlsxwriter::{Workbook, XlsxError};
+use xlsxwriter::Workbook;
 
 use axum_extra::extract::{
     cookie::{Cookie, SameSite},
@@ -72,7 +72,6 @@ pub async fn show_add_form(
     let template = AddTemplate {
         active_page: "add",
         current_user,
-        flash_message: None,
         cities: crate::models::City::all_cities(),
         methods: crate::models::SettlementMethod::all_methods(),
     };
@@ -439,10 +438,8 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         .fetch_all(&pool)
         .await?;
 
-    
     let temp_file_path = format!("/tmp/{}.xlsx", uuid::Uuid::new_v4());
-    
-    
+
     let workbook = Workbook::new(&temp_file_path)?;
     let mut sheet = workbook.add_worksheet(None)?;
 
@@ -460,7 +457,7 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         "آدرس",
         "یادداشت‌ها",
     ];
-    
+
     for (i, header) in headers.iter().enumerate() {
         sheet.write_string(0, i as u16, header, None)?;
     }
@@ -480,15 +477,21 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         sheet.write_string(row, 10, &customer.address, None)?;
         sheet.write_string(row, 11, &customer.notes, None)?;
     }
-    
+
     workbook.close()?;
-    
+
     let buffer = fs::read(&temp_file_path).map_err(|e| AppError::Internal(e.to_string()))?;
     let _ = fs::remove_file(&temp_file_path);
 
     let headers = [
-        (header::CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".to_string()),
-        (header::CONTENT_DISPOSITION, "attachment; filename=\"customers.xlsx\"".to_string()),
+        (
+            header::CONTENT_TYPE,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".to_string(),
+        ),
+        (
+            header::CONTENT_DISPOSITION,
+            "attachment; filename=\"customers.xlsx\"".to_string(),
+        ),
     ];
 
     Ok((headers, Body::from(buffer)).into_response())
