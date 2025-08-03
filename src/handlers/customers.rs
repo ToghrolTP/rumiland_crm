@@ -1,10 +1,16 @@
+use std::fs;
+
 use askama::Template;
 use axum::{
+    body::Body,
     extract::{Path, State},
-    http::method,
-    response::{Html, IntoResponse, Redirect},
+    http::{header, method},
+    response::{Html, IntoResponse, Redirect, Response},
     Form,
 };
+
+use xlsxwriter::{Workbook, XlsxError};
+
 use axum_extra::extract::{
     cookie::{Cookie, SameSite},
     CookieJar,
@@ -18,8 +24,8 @@ use crate::{
     templates::customers::{AddTemplate, DetailTemplate, EditTemplate, ListTemplate},
     utils::{
         email::{normalize_email, validate_email},
-        phone::normalize_phone_number,
         localization::persian_to_english_numbers,
+        phone::normalize_phone_number,
     },
 };
 
@@ -140,16 +146,14 @@ pub async fn add_customer(
         "".to_string()
     } else {
         let normalized_date = persian_to_english_numbers(&form.purchase_date);
-        
+
         match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
-            Ok(parsi_date) => {
-                match parsi_date.to_gregorian() {
-                    Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
-                    Err(_) => {
-                        return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
-                    }
+            Ok(parsi_date) => match parsi_date.to_gregorian() {
+                Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
+                Err(_) => {
+                    return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
                 }
-            }
+            },
             Err(_) => {
                 return Err(AppError::BadRequest(
                     "فرمت تاریخ خرید معتبر نیست".to_string(),
@@ -331,14 +335,12 @@ pub async fn update_customer(
     } else {
         let normalized_date = persian_to_english_numbers(&form.purchase_date);
         match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
-            Ok(parsi_date) => {
-                match parsi_date.to_gregorian() {
-                    Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
-                    Err(_) => {
-                        return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
-                    }
+            Ok(parsi_date) => match parsi_date.to_gregorian() {
+                Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
+                Err(_) => {
+                    return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
                 }
-            }
+            },
             Err(_) => {
                 return Err(AppError::BadRequest(
                     "فرمت تاریخ خرید معتبر نیست".to_string(),
@@ -430,4 +432,64 @@ pub async fn delete_customer(
     let jar = jar.add(flash_cookie);
 
     Ok((jar, Redirect::to("/")))
+}
+
+pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Response> {
+    let customers = sqlx::query_as::<_, Customer>("SELECT * FROM customers ORDER BY id DESC")
+        .fetch_all(&pool)
+        .await?;
+
+    
+    let temp_file_path = format!("/tmp/{}.xlsx", uuid::Uuid::new_v4());
+    
+    
+    let workbook = Workbook::new(&temp_file_path)?;
+    let mut sheet = workbook.add_worksheet(None)?;
+
+    let headers = [
+        "ID",
+        "نام کامل",
+        "شرکت",
+        "ایمیل",
+        "شماره تلفن",
+        "تعداد فروش",
+        "نحوه تسویه",
+        "تاریخ خرید",
+        "سمت شغلی",
+        "شهر",
+        "آدرس",
+        "یادداشت‌ها",
+    ];
+    
+    for (i, header) in headers.iter().enumerate() {
+        sheet.write_string(0, i as u16, header, None)?;
+    }
+
+    for (row_num, customer) in customers.iter().enumerate() {
+        let row = (row_num + 1) as u32;
+        sheet.write_number(row, 0, customer.id as f64, None)?;
+        sheet.write_string(row, 1, &customer.full_name, None)?;
+        sheet.write_string(row, 2, &customer.company, None)?;
+        sheet.write_string(row, 3, &customer.email, None)?;
+        sheet.write_string(row, 4, &customer.phone_number, None)?;
+        sheet.write_number(row, 5, customer.sales_count as f64, None)?;
+        sheet.write_string(row, 6, &customer.settlement_method_display_name(), None)?;
+        sheet.write_string(row, 7, &customer.purchase_date_shamsi(), None)?;
+        sheet.write_string(row, 8, &customer.job_title, None)?;
+        sheet.write_string(row, 9, &customer.city_display_name(), None)?;
+        sheet.write_string(row, 10, &customer.address, None)?;
+        sheet.write_string(row, 11, &customer.notes, None)?;
+    }
+    
+    workbook.close()?;
+    
+    let buffer = fs::read(&temp_file_path).map_err(|e| AppError::Internal(e.to_string()))?;
+    let _ = fs::remove_file(&temp_file_path);
+
+    let headers = [
+        (header::CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".to_string()),
+        (header::CONTENT_DISPOSITION, "attachment; filename=\"customers.xlsx\"".to_string()),
+    ];
+
+    Ok((headers, Body::from(buffer)).into_response())
 }
