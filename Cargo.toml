@@ -24,5 +24,6 @@ cookie = { version = "0.18", features = [
     "percent-encode",
 ] } # For cookie time duration
 parsidate = "1.7.1"
+xlsxwriter = "0.6.1"
 
 [build-dependencies]

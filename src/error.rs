@@ -3,34 +3,23 @@ use axum::{
     http::StatusCode,
     response::{Html, IntoResponse, Response},
 };
+use xlsxwriter::XlsxError;
 use std::fmt;
 
 use crate::templates::errors::ErrorTemplate;
 
-/// Application-wide error type
 #[derive(Debug)]
 pub enum AppError {
-    /// Database errors
     Database(sqlx::Error),
-    /// Authentication failed
     Unauthorized,
-    /// Access forbidden
     Forbidden,
-    /// Resource not found
     NotFound,
-    /// Bad request
     BadRequest(String),
-    /// Internal server error
     Internal(String),
-    /// Template rendering error
     Template(askama::Error),
-    /// Password hashing error
     Bcrypt(bcrypt::BcryptError),
-    /// Validation error with field details
     Validation(Vec<(String, String)>),
-    /// Duplicate entry error
     DuplicateEntry(String),
-    /// Session expired
     SessionExpired,
 }
 
@@ -108,10 +97,8 @@ impl IntoResponse for AppError {
                 )
             },
             AppError::Database(ref e) => {
-                // Log the actual database error
                 eprintln!("Database error: {:?}", e);
                 
-                // Check for specific database errors
                 let template = if e.to_string().contains("UNIQUE constraint failed") {
                     ErrorTemplate::for_duplicate_entry("unknown")
                 } else {
@@ -158,10 +145,8 @@ impl IntoResponse for AppError {
     }
 }
 
-// Implement conversions from other error types
 impl From<sqlx::Error> for AppError {
     fn from(err: sqlx::Error) -> Self {
-        // Check for specific database errors
         match &err {
             sqlx::Error::Database(db_err) => {
                 let msg = db_err.message();
@@ -191,5 +176,11 @@ impl From<bcrypt::BcryptError> for AppError {
     }
 }
 
-/// Type alias for Results in our application
+
+impl From<xlsxwriter::XlsxError> for AppError {
+    fn from(err: xlsxwriter::XlsxError) -> Self {
+        AppError::Internal(format!("Failed to create XLSX file: {}", err))
+    }
+}
+
 pub type AppResult<T> = Result<T, AppError>;
