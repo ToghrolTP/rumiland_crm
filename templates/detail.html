@@ -24,17 +24,17 @@
 <div class="card">
     <div class="detail-grid">
         <div class="detail-row">
-            <div class="detail-label">نام کامل</div>
+            <label class="detail-label">نام کامل</label>
             <div class="detail-value">{{ customer.full_name }}</div>
         </div>
 
         <div class="detail-row">
-            <div class="detail-label">شرکت</div>
+            <label class="detail-label">شرکت</label>
             <div class="detail-value">{{ customer.company }}</div>
         </div>
 
         <div class="detail-row">
-            <div class="detail-label">ایمیل</div>
+            <label class="detail-label">ایمیل</label>
             <div class="detail-value">
                 <a href="mailto:{{ customer.email }}" class="email-link">
                     <span class="email-icon">✉️</span>
@@ -44,7 +44,7 @@
         </div>
 
         <div class="detail-row">
-            <div class="detail-label">شماره تلفن</div>
+            <label class="detail-label">شماره تلفن</label>
             <div class="detail-value">
                 <a href="tel:{{ customer.phone_number }}" class="phone-link">
                     {% if customer.phone_number.starts_with("09") %}
@@ -60,17 +60,17 @@
         </div>
         
         <div class="detail-row">
-            <div class="detail-label">تعداد فروش</div>
+            <label class="detail-label">تعداد فروش</label>
             <div class="detail-value">{{ customer.sales_count }}</div>
         </div>
         
         <div class="detail-row">
-            <div class="detail-label">نحوه تسویه</div>
+            <label class="detail-label">نحوه تسویه</label>
             <div class="detail-value">{{ customer.settlement_method_display_name() }}</div>
         </div>
         
         <div class="detail-row">
-            <div class="detail-label">تاریخ خرید</div>
+            <label class="detail-label">تاریخ خرید</label>
             <div class="detail-value">
                 {% if customer.purchase_date.is_empty() %}
                     <span class="text-muted">ثبت نشده</span>
@@ -81,7 +81,7 @@
         </div>
         
         <div class="detail-row">
-            <div class="detail-label">سمت شغلی</div>
+            <label class="detail-label">سمت شغلی</label>
             <div class="detail-value">
                 {% if customer.job_title.is_empty() %}
                     <span class="text-muted">ثبت نشده</span>
@@ -97,7 +97,7 @@
         </div>
         
         <div class="detail-row">
-            <div class="detail-label">آدرس</div>
+            <label class="detail-label">آدرس</label>
             <div class="detail-value">
                 {% if customer.address.is_empty() %}
                     <span class="text-muted">ثبت نشده</span>
@@ -108,7 +108,7 @@
         </div>
 
         <div class="detail-row">
-            <div class="detail-label">یادداشت‌ها</div>
+            <label class="detail-label">یادداشت‌ها<label>
             <div class="detail-value">
                 {% if customer.notes.is_empty() %}
                 <span class="text-muted">بدون یادداشت</span>
@@ -171,16 +171,13 @@
             return;
         }
 
-        // Confirm deletion
         if (!confirm("آیا از حذف «{{ customer.full_name }}» اطمینان دارید؟")) {
             e.preventDefault();
             return;
         }
 
-        // Mark as deleting
         isDeleting = true;
 
-        // Update button state
         deleteBtn.disabled = true;
         deleteBtn.classList.add("btn-loading-state");
         deleteBtn.querySelector(".btn-content").style.display = "none";
