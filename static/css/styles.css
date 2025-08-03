@@ -1280,3 +1280,9 @@ select[style*="pointer-events: none"] {
         height: 2.5rem;
     }
 }
+
+.form-button-group {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-xl);
+}
