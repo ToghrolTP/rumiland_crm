@@ -29,6 +29,7 @@ pub fn configure_routes(pool: Pool<Sqlite>) -> Router {
             "/edit/:id",
             get(customers::show_edit_form).post(customers::update_customer),
         )
+        .route("/export/customers", get(customers::export_customer))
         .route("/logout", post(auth::logout))
         // Catalog routes
         .route("/catalog", get(catalog::show_catalog))
