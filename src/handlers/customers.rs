@@ -20,7 +20,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     error::{AppError, AppResult},
     middleware::auth::get_current_user,
-    models::{Customer, CustomerForm},
+    models::{Customer, CustomerForm, Transaction},
     templates::customers::{AddTemplate, DetailTemplate, EditTemplate, ListTemplate},
     utils::{
         email::{normalize_email, validate_email},
@@ -31,7 +31,6 @@ use crate::{
 
 use parsidate::ParsiDate;
 
-/// List all customers
 pub async fn list_customers(
     State(pool): State<Pool<Sqlite>>,
     jar: CookieJar,
@@ -41,7 +40,6 @@ pub async fn list_customers(
     // Check for flash message
     let flash_message = jar.get("flash_message").map(|c| c.value().to_string());
 
-    // Remove flash message cookie after reading
     let jar = if flash_message.is_some() {
         jar.remove(Cookie::from("flash_message"))
     } else {
@@ -248,9 +246,17 @@ pub async fn view_customer(
         .fetch_optional(&pool)
         .await?
         .ok_or(AppError::NotFound)?;
+    
+    let transactions = sqlx::query_as::<_, Transaction>(
+        "SELECT * FROM transactions WHERE customer_id = ? ORDER BY transaction_date DESC",
+    )
+    .bind(id)
+    .fetch_all(&pool)
+    .await?;
 
     let template = DetailTemplate {
         customer,
+        transactions,
         active_page: "",
         current_user,
         flash_message,

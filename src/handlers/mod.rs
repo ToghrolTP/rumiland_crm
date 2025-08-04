@@ -1,6 +1,7 @@
 pub mod auth;
 pub mod catalog;
 pub mod customers;
+pub mod transactions;
 pub mod users;
 
 use axum::Router;
@@ -24,6 +25,10 @@ pub fn configure_routes(pool: Pool<Sqlite>) -> Router {
             get(customers::show_add_form).post(customers::add_customer),
         )
         .route("/customer/:id", get(customers::view_customer))
+        .route(
+            "/customer/:id/add-transaction",
+            get(transactions::show_add_transaction_form).post(transactions::add_transaction),
+        )
         .route("/delete/:id", post(customers::delete_customer))
         .route(
             "/edit/:id",
