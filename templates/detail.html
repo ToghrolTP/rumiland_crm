@@ -108,12 +108,12 @@
         </div>
 
         <div class="detail-row">
-            <label class="detail-label">یادداشت‌ها</label>
+            <label class="detail-label">یادداشت‌ها<label>
             <div class="detail-value">
                 {% if customer.notes.is_empty() %}
-                    <span class="text-muted">بدون یادداشت</span>
+                <span class="text-muted">بدون یادداشت</span>
                 {% else %}
-                    <div class="detail-notes">{{ customer.notes }}</div>
+                <div class="detail-notes">{{ customer.notes }}</div>
                 {% endif %}
             </div>
         </div>
