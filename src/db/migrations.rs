@@ -72,6 +72,22 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     .execute(pool)
     .await?;
 
+    sqlx::query(
+        r#"
+        CREATE TABLE IF NOT EXISTS transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_id INTEGER NOT NULL,
+            amount REAL NOT NULL,
+            transaction_type TEXT NOT NULL,
+            description TEXT,
+            transaction_date TEXT NOT NULL DEFAULT '',
+            FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+        )
+        "#,
+    )
+    .execute(pool)
+    .await?;
+
     // Create indexes for better performance
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)")
         .execute(pool)
@@ -86,6 +102,10 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
         .await?;
 
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)")
+        .execute(pool)
+        .await?;
+    
+    sqlx::query("CREATE INDEX IF NOT EXISTS idx_transactions_customer_id ON transactions(customer_id)")
         .execute(pool)
         .await?;
 
