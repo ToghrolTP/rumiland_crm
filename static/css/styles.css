@@ -1126,8 +1126,7 @@ select[style*="pointer-events: none"] {
 
 /* Main container - Change the font here! */
 .datepicker-plot-area {
-    font-family: "Vazirmatn", sans-serif !important; /* This changes the font */
-    width: 300px !important;
+    font-family: "Vazirmatn", sans-serif !important;
     border: 1px solid #3c3836 !important;
     border-radius: 5px !important;
     background-color: #1d2021 !important;
