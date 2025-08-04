@@ -1,4 +1,4 @@
-use crate::models::{Customer, User};
+use crate::models::{Customer, User, Transaction};
 use askama::Template;
 
 /// Customer list page template
@@ -27,6 +27,7 @@ pub struct AddTemplate {
 #[template(path = "detail.html")]
 pub struct DetailTemplate {
     pub customer: Customer,
+    pub transactions: Vec<Transaction>,
     pub active_page: &'static str,
     pub current_user: Option<User>,
     pub flash_message: Option<String>,

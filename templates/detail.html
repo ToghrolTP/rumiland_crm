@@ -139,7 +139,7 @@
             id="delete-form"
             style="margin: 0"
         >
-            <button type="submit" class="btn btn-danger" id="delete-btn">
+            <button type="submit" class="btn btn-danger" id="delete-btn" style="border: 2px solid var(--accent-danger);">
                 <span class="btn-content">
                     <span>🗑️</span>
                     <span>حذف</span>
@@ -156,6 +156,61 @@
             <span>بازگشت</span>
         </a>
     </div>
+</div>
+
+<div class="card" style="margin-top: var(--space-xl);">
+    <div class="page-title" style="margin-bottom: var(--space-lg);">
+        <h2 class="mb-0">تاریخچه تراکنش‌ها</h2>
+        <span class="badge badge-info">{{ transactions.len() }} تراکنش</span>
+    </div>
+    <div class="page-actions" style="margin-bottom: 10px;">
+         <a href="/customer/{{ customer.id }}/add-transaction" class="btn btn-secondary">
+             <span>➕</span>
+             <span>افزودن تراکنش</span>
+         </a>
+     </div>
+
+    {% if transactions.is_empty() %}
+    <div class="empty-state" style="padding: var(--space-lg) 0;">
+        <div class="empty-icon" style="font-size: 2rem;">🧾</div>
+        <h3 class="empty-title">تراکنشی ثبت نشده است</h3>
+        <p class="empty-description" style="margin-bottom: 0;">
+            هنوز هیچ تراکنشی برای این مشتری ثبت نشده است.
+        </p>
+    </div>
+    {% else %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>تاریخ</th>
+                    <th>نوع تراکنش</th>
+                    <th>مبلغ</th>
+                    <th>توضیحات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td class="auto-fit">{{ transaction.formatted_date_shamsi() }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                    <td class="auto-fit">
+                        <span>{{ transaction.formatted_amount() }}</span>
+                    </td>
+                    <td>
+                        {% match transaction.description %}
+                            {% when Some with (desc) %}
+                                {{ desc }}
+                            {% when None %}
+                                <span class="text-muted">--</span>
+                        {% endmatch %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 </div>
 
 <script>
