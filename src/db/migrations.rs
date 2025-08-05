@@ -10,7 +10,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             full_name TEXT NOT NULL,
             company TEXT NOT NULL,
-            email TEXT NOT NULL,
+            email TEXT NOT NULL DEFAULT '',
             phone_number TEXT NOT NULL,
             sales_count INTEGER NOT NULL DEFAULT 0,
             settlement_method TEXT NOT NULL DEFAULT '',
