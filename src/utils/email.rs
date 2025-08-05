@@ -5,10 +5,14 @@ pub fn validate_email(email: &str) -> AppResult<String> {
     let email = email.trim().to_lowercase();
 
     // Check if email is empty
+    // if email.is_empty() {
+    //     return Err(AppError::BadRequest(
+    //         "آدرس ایمیل نمی‌تواند خالی باشد".to_string()
+    //     ));
+    // }
+    
     if email.is_empty() {
-        return Err(AppError::BadRequest(
-            "آدرس ایمیل نمی‌تواند خالی باشد".to_string()
-        ));
+        return Ok(email);
     }
 
     // Check for @ symbol
