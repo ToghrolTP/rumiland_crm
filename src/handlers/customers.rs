@@ -174,14 +174,14 @@ pub async fn add_customer(
     }
 
     // Check for duplicate email
-    let existing: Option<(i64,)> = sqlx::query_as("SELECT id FROM customers WHERE email = ?")
-        .bind(&form.email)
-        .fetch_optional(&pool)
-        .await?;
+    // let existing: Option<(i64,)> = sqlx::query_as("SELECT id FROM customers WHERE email = ?")
+    //     .bind(&form.email)
+    //     .fetch_optional(&pool)
+    //     .await?;
 
-    if existing.is_some() {
-        return Err(AppError::DuplicateEntry("email".to_string()));
-    }
+    // if existing.is_some() {
+    //     return Err(AppError::DuplicateEntry("email".to_string()));
+    // }
 
     sqlx::query(
         "INSERT INTO customers (full_name, company, email, phone_number, sales_count, settlement_method, purchase_date, job_title, city, address, notes)
