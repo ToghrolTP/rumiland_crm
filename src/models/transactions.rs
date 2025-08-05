@@ -15,7 +15,10 @@ pub struct Transaction {
 impl Transaction {
     pub fn formatted_amount(&self) -> String {
         let amount_str = format!("{:.0}", self.amount);
-        format!("{} تومان", crate::utils::localization::to_persian_digits(&amount_str))
+        format!(
+            "{} تومان",
+            crate::utils::localization::to_persian_digits(&amount_str)
+        )
     }
 
     pub fn formatted_date_shamsi(&self) -> String {

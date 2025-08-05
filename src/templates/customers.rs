@@ -1,4 +1,4 @@
-use crate::models::{Customer, User, Transaction};
+use crate::models::{Customer, Transaction, User};
 use askama::Template;
 
 /// Customer list page template

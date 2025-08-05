@@ -1,6 +1,6 @@
+use parsidate::ParsiDate;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
-use parsidate::ParsiDate;
 
 /// Customer entity representing a CRM customer
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
@@ -44,26 +44,24 @@ impl Customer {
     pub fn city_display_name(&self) -> String {
         City::from_str(&self.city).display_name().to_string()
     }
-    
+
     pub fn settlement_method_display_name(&self) -> String {
-        SettlementMethod::from_str(&self.settlement_method).display_name().to_string()
+        SettlementMethod::from_str(&self.settlement_method)
+            .display_name()
+            .to_string()
     }
-    
+
     pub fn purchase_date_shamsi(&self) -> String {
         if self.purchase_date.is_empty() {
             return "".to_string();
         }
-        
+
         match chrono::NaiveDate::parse_from_str(&self.purchase_date, "%Y-%m-%d") {
-            Ok(gregorian_date) => {
-                ParsiDate::from_gregorian(gregorian_date)
-                    .unwrap()
-                    .format("%Y/%m/%d")
-                    .to_string()
-            }
-            Err(_) => {
-                self.purchase_date.clone()
-            }
+            Ok(gregorian_date) => ParsiDate::from_gregorian(gregorian_date)
+                .unwrap()
+                .format("%Y/%m/%d")
+                .to_string(),
+            Err(_) => self.purchase_date.clone(),
         }
     }
 }
@@ -141,7 +139,7 @@ impl SettlementMethod {
             SettlementMethod::Credit,
         ]
     }
-    
+
     pub fn as_str(&self) -> &'static str {
         match self {
             SettlementMethod::Cash => "Cash",
@@ -151,7 +149,7 @@ impl SettlementMethod {
             SettlementMethod::None => "",
         }
     }
-    
+
     pub fn from_str(s: &str) -> Self {
         match s {
             "Cash" => SettlementMethod::Cash,
@@ -161,7 +159,7 @@ impl SettlementMethod {
             _ => SettlementMethod::None,
         }
     }
-    
+
     pub fn display_name(&self) -> &'static str {
         match self {
             SettlementMethod::Cash => "نقدی",

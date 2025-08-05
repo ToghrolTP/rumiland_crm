@@ -30,7 +30,7 @@ impl ErrorTemplate {
             home_url: "/".to_string(),
         }
     }
-    
+
     pub fn for_unauthorized() -> Self {
         Self {
             title: "عدم دسترسی".to_string(),
@@ -45,7 +45,7 @@ impl ErrorTemplate {
             home_url: "/login".to_string(),
         }
     }
-    
+
     pub fn for_forbidden() -> Self {
         Self {
             title: "دسترسی ممنوع".to_string(),
@@ -60,7 +60,7 @@ impl ErrorTemplate {
             home_url: "/".to_string(),
         }
     }
-    
+
     pub fn for_database_error() -> Self {
         Self {
             title: "خطای پایگاه داده".to_string(),
@@ -76,18 +76,20 @@ impl ErrorTemplate {
             home_url: "/".to_string(),
         }
     }
-    
+
     pub fn for_duplicate_entry(field: &str) -> Self {
         let message = match field {
             "username" => "این نام کاربری قبلاً ثبت شده است",
             "email" => "این آدرس ایمیل قبلاً ثبت شده است",
-            _ => "این مورد قبلاً در سیستم ثبت شده است"
+            _ => "این مورد قبلاً در سیستم ثبت شده است",
         };
-        
+
         Self {
             title: "اطلاعات تکراری".to_string(),
             message: message.to_string(),
-            details: Some("هر مورد باید منحصر به فرد باشد و نمی‌توان آن را دوباره ثبت کرد.".to_string()),
+            details: Some(
+                "هر مورد باید منحصر به فرد باشد و نمی‌توان آن را دوباره ثبت کرد.".to_string(),
+            ),
             suggestions: vec![
                 "اطلاعات وارد شده را بررسی و تغییر دهید".to_string(),
                 "اگر قبلاً این اطلاعات را ثبت کرده‌اید، می‌توانید آن را ویرایش کنید".to_string(),
@@ -98,7 +100,7 @@ impl ErrorTemplate {
             home_url: "/".to_string(),
         }
     }
-    
+
     pub fn for_validation_error(details: String) -> Self {
         Self {
             title: "خطای اعتبارسنجی".to_string(),

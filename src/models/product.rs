@@ -23,7 +23,10 @@ pub struct ProductForm {
 impl Product {
     pub fn formatted_price(&self) -> String {
         let price_str = format!("{:.0}", self.price);
-        format!("{} تومان", crate::utils::localization::to_persian_digits(&price_str))
+        format!(
+            "{} تومان",
+            crate::utils::localization::to_persian_digits(&price_str)
+        )
     }
 
     pub fn stock_status_class(&self) -> &'static str {
