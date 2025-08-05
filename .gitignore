@@ -5,3 +5,4 @@ target/
 .DS_Store
 Cargo.lock
 git_diff.txt
+rumiland.db.backup-*
