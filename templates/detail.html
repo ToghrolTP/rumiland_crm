@@ -36,10 +36,14 @@
         <div class="detail-row">
             <label class="detail-label">ایمیل</label>
             <div class="detail-value">
-                <a href="mailto:{{ customer.email }}" class="email-link">
-                    <span class="email-icon">✉️</span>
-                    <span class="email-address">{{ customer.email }}</span>
-                </a>
+                {% if customer.email.is_empty() %}
+                    <span class="text-muted">ثبت نشده</span>
+                {% else %}
+                    <a href="mailto:{{ customer.email }}" class="email-link">
+                        <span class="email-icon">✉️</span>
+                        <span class="email-address">{{ customer.email }}</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
 
