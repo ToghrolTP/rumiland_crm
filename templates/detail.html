@@ -69,11 +69,6 @@
         </div>
         
         <div class="detail-row">
-            <label class="detail-label">نحوه تسویه</label>
-            <div class="detail-value">{{ customer.settlement_method_display_name() }}</div>
-        </div>
-        
-        <div class="detail-row">
             <label class="detail-label">تاریخ خرید</label>
             <div class="detail-value">
                 {% if customer.purchase_date.is_empty() %}
@@ -197,7 +192,7 @@
                 {% for transaction in transactions %}
                 <tr>
                     <td class="auto-fit">{{ transaction.formatted_date_shamsi() }}</td>
-                    <td>{{ transaction.transaction_type }}</td>
+                    <td>{{ transaction.transaction_type_display_name() }}</td>
                     <td class="auto-fit">
                         <span>{{ transaction.formatted_amount() }}</span>
                     </td>

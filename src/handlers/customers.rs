@@ -71,7 +71,6 @@ pub async fn show_add_form(
         active_page: "add",
         current_user,
         cities: crate::models::City::all_cities(),
-        methods: crate::models::SettlementMethod::all_methods(),
     };
 
     Ok(Html(template.render()?))
@@ -90,7 +89,6 @@ pub async fn add_customer(
     form.job_title = form.job_title.trim().to_string();
     form.address = form.address.trim().to_string();
     form.city = form.city.trim().to_string();
-    form.settlement_method = form.settlement_method.trim().to_string();
 
     // Validate required fields
     if form.full_name.trim().is_empty() {
@@ -122,19 +120,6 @@ pub async fn add_customer(
     if form.sales_count < 0 {
         return Err(AppError::BadRequest(
             "تعداد فروش نمیتواند منفی باشد".to_string(),
-        ));
-    }
-
-    // Validate settlement_method
-    let valid_methods: Vec<String> = crate::models::SettlementMethod::all_methods()
-        .into_iter()
-        .map(|method| method.as_str().to_string())
-        .collect();
-
-    let method_str = form.settlement_method;
-    if !valid_methods.contains(&method_str.to_string()) && !method_str.is_empty() {
-        return Err(AppError::BadRequest(
-            "نحوه تسویه انتخاب شده معتبر نیست".to_string(),
         ));
     }
 
@@ -173,26 +158,15 @@ pub async fn add_customer(
         ));
     }
 
-    // Check for duplicate email
-    // let existing: Option<(i64,)> = sqlx::query_as("SELECT id FROM customers WHERE email = ?")
-    //     .bind(&form.email)
-    //     .fetch_optional(&pool)
-    //     .await?;
-
-    // if existing.is_some() {
-    //     return Err(AppError::DuplicateEntry("email".to_string()));
-    // }
-
     sqlx::query(
-        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, settlement_method, purchase_date, job_title, city, address, notes)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, purchase_date, job_title, city, address, notes)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&form.full_name)
     .bind(&form.company)
     .bind(&form.email)
     .bind(&form.phone_number)
     .bind(&form.sales_count)
-    .bind(method_str)
     .bind(&purchase_date_gregorian)
     .bind(&form.job_title)
     .bind(city_str)
@@ -284,7 +258,6 @@ pub async fn show_edit_form(
         active_page: "",
         current_user,
         cities: crate::models::City::all_cities(),
-        methods: crate::models::SettlementMethod::all_methods(),
     };
 
     Ok(Html(template.render()?))
@@ -321,19 +294,6 @@ pub async fn update_customer(
         ));
     }
 
-    // Validate settlement_method
-    let valid_methods: Vec<String> = crate::models::SettlementMethod::all_methods()
-        .into_iter()
-        .map(|method| method.as_str().to_string())
-        .collect();
-
-    let method_str = form.settlement_method;
-    if !valid_methods.contains(&method_str.to_string()) && !method_str.is_empty() {
-        return Err(AppError::BadRequest(
-            "نحوه تسویه انتخاب شده معتبر نیست".to_string(),
-        ));
-    }
-
     // Validate purchase_date
     let purchase_date_gregorian = if form.purchase_date.is_empty() {
         "".to_string()
@@ -360,7 +320,7 @@ pub async fn update_customer(
 
     let result = sqlx::query(
         "UPDATE customers
-         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, settlement_method = ?, purchase_date = ?, job_title = ?, city = ?, address = ?, notes = ?
+         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, purchase_date = ?, job_title = ?, city = ?, address = ?, notes = ?
          WHERE id = ?"
     )
     .bind(&form.full_name)
@@ -368,7 +328,6 @@ pub async fn update_customer(
     .bind(&form.email)
     .bind(&form.phone_number)
     .bind(&form.sales_count)
-    .bind(method_str)
     .bind(&purchase_date_gregorian)
     .bind(&form.job_title)
     .bind(city_str)
@@ -456,7 +415,6 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         "ایمیل",
         "شماره تلفن",
         "تعداد فروش",
-        "نحوه تسویه",
         "تاریخ خرید",
         "سمت شغلی",
         "شهر",
@@ -476,12 +434,11 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         sheet.write_string(row, 3, &customer.email, None)?;
         sheet.write_string(row, 4, &customer.phone_number, None)?;
         sheet.write_number(row, 5, customer.sales_count as f64, None)?;
-        sheet.write_string(row, 6, &customer.settlement_method_display_name(), None)?;
-        sheet.write_string(row, 7, &customer.purchase_date_shamsi(), None)?;
-        sheet.write_string(row, 8, &customer.job_title, None)?;
-        sheet.write_string(row, 9, &customer.city_display_name(), None)?;
-        sheet.write_string(row, 10, &customer.address, None)?;
-        sheet.write_string(row, 11, &customer.notes, None)?;
+        sheet.write_string(row, 6, &customer.purchase_date_shamsi(), None)?;
+        sheet.write_string(row, 7, &customer.job_title, None)?;
+        sheet.write_string(row, 8, &customer.city_display_name(), None)?;
+        sheet.write_string(row, 9, &customer.address, None)?;
+        sheet.write_string(row, 10, &customer.notes, None)?;
     }
 
     workbook.close()?;

@@ -18,7 +18,6 @@ pub struct AddTemplate {
     pub active_page: &'static str,
     pub current_user: Option<User>,
     pub cities: Vec<crate::models::City>,
-    pub methods: Vec<crate::models::SettlementMethod>,
     // pub batch_count: i32,
 }
 
@@ -41,5 +40,4 @@ pub struct EditTemplate {
     pub active_page: &'static str,
     pub current_user: Option<User>,
     pub cities: Vec<crate::models::City>,
-    pub methods: Vec<crate::models::SettlementMethod>,
 }

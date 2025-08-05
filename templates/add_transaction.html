@@ -24,14 +24,11 @@
 
         <div class="form-group">
             <label for="transaction_type" class="form-label">نوع تراکنش *</label>
-            <input
-                type="text"
-                id="transaction_type"
-                name="transaction_type"
-                class="form-input"
-                placeholder="مثال: واریز"
-                required
-            />
+            <select id="transaction_type" name="transaction_type" class="form-input" required>
+                {% for type in transaction_types %}
+                <option value="{{ type.as_str() }}">{{ type.display_name() }}</option>
+                {% endfor %}
+            </select>
         </div>
 
         <div class="form-group">

@@ -11,7 +11,6 @@ pub struct Customer {
     pub email: String,
     pub phone_number: String,
     pub sales_count: i64,
-    pub settlement_method: String,
     pub purchase_date: String,
     pub job_title: String,
     pub city: String,
@@ -27,7 +26,6 @@ pub struct CustomerForm {
     pub email: String,
     pub phone_number: String,
     pub sales_count: i64,
-    pub settlement_method: String,
     pub purchase_date: String,
     pub job_title: String,
     pub city: String,
@@ -43,12 +41,6 @@ impl Customer {
 
     pub fn city_display_name(&self) -> String {
         City::from_str(&self.city).display_name().to_string()
-    }
-
-    pub fn settlement_method_display_name(&self) -> String {
-        SettlementMethod::from_str(&self.settlement_method)
-            .display_name()
-            .to_string()
     }
 
     pub fn purchase_date_shamsi(&self) -> String {
@@ -117,56 +109,6 @@ impl City {
             City::Zanjan => "زنجان",
             City::Qazvin => "قزوین",
             City::None => "انتخاب کنید",
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub enum SettlementMethod {
-    Cash,
-    CardTransfer,
-    Cheque,
-    Credit,
-    None,
-}
-
-impl SettlementMethod {
-    pub fn all_methods() -> Vec<SettlementMethod> {
-        vec![
-            SettlementMethod::Cash,
-            SettlementMethod::CardTransfer,
-            SettlementMethod::Cheque,
-            SettlementMethod::Credit,
-        ]
-    }
-
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            SettlementMethod::Cash => "Cash",
-            SettlementMethod::CardTransfer => "CardTransfer",
-            SettlementMethod::Cheque => "Cheque",
-            SettlementMethod::Credit => "Credit",
-            SettlementMethod::None => "",
-        }
-    }
-
-    pub fn from_str(s: &str) -> Self {
-        match s {
-            "Cash" => SettlementMethod::Cash,
-            "CardTransfer" => SettlementMethod::CardTransfer,
-            "Cheque" => SettlementMethod::Cheque,
-            "Credit" => SettlementMethod::Credit,
-            _ => SettlementMethod::None,
-        }
-    }
-
-    pub fn display_name(&self) -> &'static str {
-        match self {
-            SettlementMethod::Cash => "نقدی",
-            SettlementMethod::CardTransfer => "کارت به کارت",
-            SettlementMethod::Cheque => "چک",
-            SettlementMethod::Credit => "اعتباری",
-            SettlementMethod::None => "انتخاب کنید",
         }
     }
 }

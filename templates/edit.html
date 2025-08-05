@@ -119,22 +119,6 @@ endblock %} {% block content %}
         </div>
         
         <div class="form-group">
-            <label for="settlement_method" class="form-label">نحوه تسویه</label>
-            <select
-                id="settlement_method"
-                name="settlement_method"
-                class="form-input"
-            >
-                <option value="" {% if customer.settlement_method.is_empty() %}selected{% endif %}>انتخاب کنید</option>
-                {% for method_option in methods %}
-                <option value="{{ method_option.as_str() }}" {% if customer.settlement_method == method_option.as_str() %}selected{% endif %}>
-                    {{ method_option.display_name() }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        
-        <div class="form-group">
             <label for="purchase_date" class="form-label">تاریخ خرید</label>
             <input
                 type="text"

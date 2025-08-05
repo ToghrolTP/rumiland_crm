@@ -116,22 +116,6 @@ block content %}
         </div>
 
         <div class="form-group">
-            <label for="settlement_method" class="form-label">نحوه تسویه</label>
-            <select
-                id="settlement_method"
-                name="settlement_method"
-                class="form-input"
-            >
-                <option value="">انتخاب کنید</option>
-                {% for method in methods %}
-                <option value="{{ method.as_str() }}">
-                    {{ method.display_name() }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="form-group">
             <label for="purchase_date" class="form_label">تاریخ خرید</label>
             <input
                 type="text"

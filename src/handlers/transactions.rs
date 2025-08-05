@@ -13,7 +13,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     error::{AppError, AppResult},
     middleware::auth::get_current_user,
-    models::{Customer, User, TransactionForm},
+    models::{Customer, User, TransactionForm, TransactionType},
     utils::localization::persian_to_english_numbers,
 };
 
@@ -23,6 +23,7 @@ pub struct AddTransactionTemplate {
     pub customer: Customer,
     pub current_user: Option<User>,
     pub active_page: &'static str,
+    pub transaction_types: Vec<TransactionType>,
 }
 
 #[axum::debug_handler]
@@ -43,6 +44,7 @@ pub async fn show_add_transaction_form(
         customer,
         current_user,
         active_page: "",
+        transaction_types: TransactionType::all(),
     };
 
     Ok(Html(template.render()?))

@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
-/// Session entity for user authentication
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Session {
     pub id: String,
@@ -15,7 +14,6 @@ impl Session {
         uuid::Uuid::new_v4().to_string()
     }
 
-    /// Create expiry timestamp (24 hours from now)
     pub fn generate_expiry() -> String {
         use chrono::{Duration, Utc};
         (Utc::now() + Duration::hours(24)).to_rfc3339()

@@ -63,7 +63,6 @@ content %}
                 <!-- <th>ایمیل</th> -->
                 <th>تلفن</th>
                 <th>تعداد فروش</th>
-                <th>نحوه تسویه</th>
                 <th>تاریخ خرید</th>
                 <th>سمت شغلی</th>
                 <th>آدرس</th>
@@ -86,7 +85,6 @@ content %}
                     <span class="phone-number text-small">{{ customer.formatted_phone() }}</span>
                 </td>
                 <td class="auto-fit">{{ customer.sales_count }}</td>
-                <td class="auto-fit">{{ customer.settlement_method_display_name() }}</td>
                 <td class="auto-fit">
                     {% if customer.purchase_date.is_empty() %}
                         <span class="text-muted">--</span>
