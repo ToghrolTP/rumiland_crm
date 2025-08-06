@@ -123,26 +123,7 @@ pub async fn add_customer(
         ));
     }
 
-    // Validate purchase_date
-    let purchase_date_gregorian = if form.purchase_date.is_empty() {
-        "".to_string()
-    } else {
-        let normalized_date = persian_to_english_numbers(&form.purchase_date);
-
-        match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
-            Ok(parsi_date) => match parsi_date.to_gregorian() {
-                Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
-                Err(_) => {
-                    return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
-                }
-            },
-            Err(_) => {
-                return Err(AppError::BadRequest(
-                    "فرمت تاریخ خرید معتبر نیست".to_string(),
-                ));
-            }
-        }
-    };
+    
 
     // Validate city
     let city_str = form.city;
@@ -159,15 +140,14 @@ pub async fn add_customer(
     }
 
     sqlx::query(
-        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, purchase_date, job_title, city, address, notes)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, job_title, city, address, notes)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&form.full_name)
     .bind(&form.company)
     .bind(&form.email)
     .bind(&form.phone_number)
     .bind(&form.sales_count)
-    .bind(&purchase_date_gregorian)
     .bind(&form.job_title)
     .bind(city_str)
     .bind(&form.address)
@@ -294,25 +274,6 @@ pub async fn update_customer(
         ));
     }
 
-    // Validate purchase_date
-    let purchase_date_gregorian = if form.purchase_date.is_empty() {
-        "".to_string()
-    } else {
-        let normalized_date = persian_to_english_numbers(&form.purchase_date);
-        match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
-            Ok(parsi_date) => match parsi_date.to_gregorian() {
-                Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
-                Err(_) => {
-                    return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string()));
-                }
-            },
-            Err(_) => {
-                return Err(AppError::BadRequest(
-                    "فرمت تاریخ خرید معتبر نیست".to_string(),
-                ));
-            }
-        }
-    };
 
     // Validate and normalize email
     form.email = validate_email(&form.email)?;
@@ -320,7 +281,7 @@ pub async fn update_customer(
 
     let result = sqlx::query(
         "UPDATE customers
-         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, purchase_date = ?, job_title = ?, city = ?, address = ?, notes = ?
+         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, job_title = ?, city = ?, address = ?, notes = ?
          WHERE id = ?"
     )
     .bind(&form.full_name)
@@ -328,7 +289,6 @@ pub async fn update_customer(
     .bind(&form.email)
     .bind(&form.phone_number)
     .bind(&form.sales_count)
-    .bind(&purchase_date_gregorian)
     .bind(&form.job_title)
     .bind(city_str)
     .bind(&form.address)
@@ -434,7 +394,6 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         sheet.write_string(row, 3, &customer.email, None)?;
         sheet.write_string(row, 4, &customer.phone_number, None)?;
         sheet.write_number(row, 5, customer.sales_count as f64, None)?;
-        sheet.write_string(row, 6, &customer.purchase_date_shamsi(), None)?;
         sheet.write_string(row, 7, &customer.job_title, None)?;
         sheet.write_string(row, 8, &customer.city_display_name(), None)?;
         sheet.write_string(row, 9, &customer.address, None)?;

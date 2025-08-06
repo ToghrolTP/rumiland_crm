@@ -11,7 +11,6 @@ pub struct Customer {
     pub email: String,
     pub phone_number: String,
     pub sales_count: i64,
-    pub purchase_date: String,
     pub job_title: String,
     pub city: String,
     pub address: String,
@@ -26,7 +25,6 @@ pub struct CustomerForm {
     pub email: String,
     pub phone_number: String,
     pub sales_count: i64,
-    pub purchase_date: String,
     pub job_title: String,
     pub city: String,
     pub address: String,
@@ -43,19 +41,7 @@ impl Customer {
         City::from_str(&self.city).display_name().to_string()
     }
 
-    pub fn purchase_date_shamsi(&self) -> String {
-        if self.purchase_date.is_empty() {
-            return "".to_string();
-        }
-
-        match chrono::NaiveDate::parse_from_str(&self.purchase_date, "%Y-%m-%d") {
-            Ok(gregorian_date) => ParsiDate::from_gregorian(gregorian_date)
-                .unwrap()
-                .format("%Y/%m/%d")
-                .to_string(),
-            Err(_) => self.purchase_date.clone(),
-        }
-    }
+    
 }
 
 #[derive(Debug, Deserialize, Serialize, PartialEq)]
