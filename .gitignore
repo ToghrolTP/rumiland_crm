@@ -6,3 +6,4 @@ target/
 Cargo.lock
 git_diff.txt
 rumiland.db.backup-*
+tools/*.sql
