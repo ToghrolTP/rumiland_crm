@@ -57,22 +57,19 @@ pub async fn add_transaction(
     Path(customer_id): Path<i64>,
     Form(form): Form<TransactionForm>,
 ) -> AppResult<impl IntoResponse> {
-    let transaction_date_gregorian = if form.transaction_date.is_empty() {
+    let shamsi_date = persian_to_english_numbers(&form.transaction_date);
+    
+    if shamsi_date.trim().is_empty() {
         return Err(AppError::BadRequest("تاریخ تراکنش الزامی است".to_string()));
-    } else {
-        let normalized_date = persian_to_english_numbers(&form.transaction_date);
-        match ParsiDate::parse(&normalized_date, "%Y/%m/%d") {
-            Ok(parsi_date) => match parsi_date.to_gregorian() {
-                Ok(gregorian_date) => gregorian_date.format("%Y-%m-%d").to_string(),
-                Err(_) => return Err(AppError::BadRequest("خطا در تبدیل تاریخ".to_string())),
-            },
-            Err(_) => {
-                return Err(AppError::BadRequest(
-                    "فرمت تاریخ تراکنش معتبر نیست. لطفا از فرمت YYYY/MM/DD استفاده کنید".to_string(),
-                ));
-            }
-        }
-    };
+    }
+    
+    let parts: Vec<&str> = shamsi_date.split('/').collect();
+    if parts.len() != 3 || parts[0].len() != 4 || parts[1].len() != 2 || parts[2].len() != 2 {
+        return Err(AppError::BadRequest(
+            "فرمت تاریخ تراکنش معتبر نیست. لطفا از فرمت YYYY/MM/DD استفاده کنید".to_string(),
+        ));
+    }
+    
 
     sqlx::query(
         "INSERT INTO transactions (customer_id, amount, transaction_type, description, transaction_date)
@@ -82,7 +79,7 @@ pub async fn add_transaction(
     .bind(form.amount)
     .bind(form.transaction_type)
     .bind(form.description)
-    .bind(&transaction_date_gregorian)
+    .bind(&shamsi_date)
     .execute(&pool)
     .await?;
 

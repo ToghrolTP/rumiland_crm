@@ -40,20 +40,6 @@ impl Transaction {
             .display_name()
             .to_string()
     }
-    
-    pub fn purchase_date_shamsi(&self) -> String {
-        if self.transaction_date.is_empty() {
-            return "".to_string();
-        }
-
-        match chrono::NaiveDate::parse_from_str(&self.transaction_date, "%Y-%m-%d") {
-            Ok(gregorian_date) => ParsiDate::from_gregorian(gregorian_date)
-                .unwrap()
-                .format("%Y/%m/%d")
-                .to_string(),
-            Err(_) => self.transaction_date.clone(),
-        }
-    }
 }
 
 #[derive(Debug, Deserialize)]

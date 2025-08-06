@@ -24,12 +24,9 @@ use crate::{
     templates::customers::{AddTemplate, DetailTemplate, EditTemplate, ListTemplate},
     utils::{
         email::{normalize_email, validate_email},
-        localization::persian_to_english_numbers,
         phone::normalize_phone_number,
     },
 };
-
-use parsidate::ParsiDate;
 
 pub async fn list_customers(
     State(pool): State<Pool<Sqlite>>,

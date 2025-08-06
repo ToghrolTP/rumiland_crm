@@ -23,7 +23,6 @@ chrono = { version = "0.4", features = ["serde"] } # For timestamps
 cookie = { version = "0.18", features = [
     "percent-encode",
 ] } # For cookie time duration
-parsidate = "1.7.1"
 xlsxwriter = "0.6.1"
 
 [build-dependencies]
