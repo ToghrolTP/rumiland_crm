@@ -63,7 +63,7 @@ content %}
                 <!-- <th>ایمیل</th> -->
                 <th>تلفن</th>
                 <th>تعداد فروش</th>
-                <th>تاریخ خرید</th>
+                <!-- <th>تاریخ خرید</th> -->
                 <th>سمت شغلی</th>
                 <th>آدرس</th>
                 <th>عملیات</th>
@@ -85,13 +85,6 @@ content %}
                     <span class="phone-number text-small">{{ customer.formatted_phone() }}</span>
                 </td>
                 <td class="auto-fit">{{ customer.sales_count }}</td>
-                <td class="auto-fit">
-                    {% if customer.purchase_date.is_empty() %}
-                        <span class="text-muted">--</span>
-                    {% else %}
-                        {{ customer.purchase_date_shamsi() }}
-                    {% endif %}
-                </td>
                 <td class="auto-fit">
                     {% if customer.job_title.is_empty() %}
                         <span class="text-muted">--</span>
