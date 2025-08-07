@@ -1,6 +1,6 @@
 # Rumiland CRM 🏢
 
-A modern, modular CRM (Customer Relationship Management) web application built with Rust, featuring a Persian/RTL interface, role-based authentication, and a product catalog.
+A modern, modular CRM (Customer Relationship Management) web application built with Rust, featuring a Persian/RTL interface, role-based authentication, and a complete product and transaction management system.
 
 ## 🏗️ Architecture
 
@@ -11,85 +11,57 @@ src/
 ├── main.rs           # Application entry point
 ├── config.rs         # Configuration management
 ├── error.rs          # Centralized error handling
-├── models/           # Data models and entities
-├── db/               # Database layer
-├── handlers/         # HTTP request handlers
+├── models/           # Data models (Customer, Product, User, Transaction)
+├── db/               # Database layer (connection, migrations)
+├── handlers/         # HTTP request handlers (controllers)
 ├── middleware/       # Middleware (authentication, etc.)
-├── templates/        # Template definitions
-└── utils/            # Utility functions
+├── templates/        # Askama template definitions
+└── utils/            # Utility functions (validation, formatting)
 ```
 
 ## ✨ Features
 
-  - **Full CRUD Operations**: Complete customer management.
-  - **Product Catalog**: A digital catalog to showcase and manage products.
-  - **Authentication System**: Secure session-based auth.
-  - **Role-Based Access**: Admin and regular user roles.
-  - **Persian/RTL Support**: Native Persian interface.
-  - **Modular Architecture**: Clean, maintainable code structure.
-  - **Error Handling**: Centralized error management.
-  - **Type Safety**: Leveraging Rust's type system.
+- **Full Customer Management (CRUD)**: Create, view, update, and delete customer records.
+- **Full Product Catalog (CRUD)**: A complete digital catalog to create, view, update, and delete products.
+- **Transaction Tracking**: Add financial transactions (payments, credits, etc.) for each customer.
+- **Secure Authentication**: Robust session-based authentication using secure cookies.
+- **Role-Based Access Control (RBAC)**: Distinct "Admin" and "User" roles with different permissions.
+- **Persian/RTL Support**: Native Persian interface designed for right-to-left reading.
+- **Type-Safe Database Operations**: Leveraging Rust's type system with SQLx for safe and reliable database queries.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-  - Rust 1.70+
-  - SQLite3
+- Rust 1.70+
+- SQLite3
 
 ### Installation
 
 1.  Clone the repository:
-
-<!-- end list -->
-
-```bash
-git clone https://github.com/yourusername/rumiland-crm.git
-cd rumiland-crm
-```
-
+    ```bash
+    git clone https://github.com/yourusername/rumiland-crm.git
+    cd rumiland-crm
+    ```
 2.  Build the project:
-
-<!-- end list -->
-
-```bash
-cargo build --release
-```
-
+    ```bash
+    cargo build --release
+    ```
 3.  Run the application:
-
-<!-- end list -->
-
-```bash
-cargo run
-```
+    ```bash
+    cargo run
+    ```
 
 The application will be available at `http://localhost:3000`.
 
-### Configuration
+### Creating an Admin User
 
-The application can be configured via environment variables:
+On the first run, a default admin is created:
 
-```bash
-# Database URL (default: sqlite:rumiland.db?mode=rwc)
-DATABASE_URL=sqlite:mydb.db
+- **Username**: `admin`
+- **Password**: `admin123`
 
-# Server host and port
-SERVER_HOST=0.0.0.0
-SERVER_PORT=3000
-
-# Session duration in hours (default: 24)
-SESSION_DURATION_HOURS=24
-```
-
-### Creating Admin User
-
-On first run, a default admin is created:
-
-  - Username: `admin`
-  - Password: `admin123`
-
-To create a custom admin user:
+To create a custom admin user, you can use the interactive command-line tool:
 
 ```bash
 cargo run create-admin
@@ -99,134 +71,73 @@ cargo run create-admin
 
 ### Models (`src/models/`)
 
-  - `customer.rs`: Customer entity and forms.
-  - `product.rs`: Product entity and forms.
-  - `user.rs`: User entity, roles, and authentication forms.
-  - `session.rs`: Session management.
-
-### Database (`src/db/`)
-
-  - `connection.rs`: Database connection pool.
-  - `migrations.rs`: SQL migrations and schema.
+- `customer.rs`: Defines the `Customer` entity and its associated forms.
+- `product.rs`: Defines the `Product` entity and its forms for creating and editing.
+- `transaction.rs`: Defines the `Transaction` entity, `TransactionType` enum, and associated forms.
+- `user.rs`: Defines the `User` entity, user roles, and authentication forms.
+- `session.rs`: Handles session management for user authentication.
 
 ### Handlers (`src/handlers/`)
 
-  - `auth.rs`: Login/logout handlers.
-  - `customers.rs`: Customer CRUD operations.
-  - `catalog.rs`: Product catalog and management.
-  - `users.rs`: User management (admin only).
-
-### Middleware (`src/middleware/`)
-
-  - `auth.rs`: Authentication middleware.
-
-### Templates (`src/templates/`)
-
-  - Template structs for Askama rendering.
-
-### Utils (`src/utils/`)
-
-  - `password.rs`: Password hashing utilities.
-
-## 🔧 Development
-
-### Running Tests
-
-```bash
-cargo test
-```
-
-### Code Formatting
-
-```bash
-cargo fmt
-```
-
-### Linting
-
-```bash
-cargo clippy
-```
-
-### Adding New Features
-
-1.  **Add a new model**: Create in `src/models/`.
-2.  **Add handlers**: Create in `src/handlers/`.
-3.  **Add routes**: Update `src/handlers/mod.rs`.
-4.  **Add templates**: Create in `src/templates/` and `templates/`.
-
-## 🚢 Deployment
-
-### Building for Production
-
-```bash
-cargo build --release
-```
-
-### Running in Production
-
-```bash
-DATABASE_URL=sqlite:/path/to/db.db \
-SERVER_HOST=0.0.0.0 \
-SERVER_PORT=80 \
-./target/release/rumiland_crm
-```
-
-### Using systemd
-
-See `deployment/rumiland.service` for systemd configuration.
+- `auth.rs`: Manages user login and logout.
+- `customers.rs`: Handles all CRUD operations for customers.
+- `catalog.rs`: Manages all CRUD operations for the product catalog.
+- `transactions.rs`: Handles adding new transactions for customers.
+- `users.rs`: Manages user administration (Admin only).
 
 ## 🔒 Security
 
-  - Passwords are hashed using bcrypt.
-  - Sessions expire after 24 hours.
-  - SQL injection protection via parameterized queries.
-  - XSS protection in templates.
-  - CSRF protection via SameSite cookies.
+- Passwords are securely hashed using **bcrypt**.
+- Sessions are stored in the database and linked via secure, HTTP-only cookies, expiring after 24 hours.
+- Parameterized queries with SQLx prevent SQL injection vulnerabilities.
+- Askama templates provide automatic output escaping to protect against XSS attacks.
 
 ## 📝 API Structure
 
 ### Public Routes
 
-  - `GET /login` - Login page
-  - `POST /login` - Authentication
-  - `GET /static/*` - Static assets
+- `GET /login`: Renders the login page.
+- `POST /login`: Authenticates user credentials and creates a session.
+- `GET /static/*`: Serves static assets like CSS and JavaScript.
 
-### Protected Routes
+### Protected Routes (Login Required)
 
-  - `GET /` - Customer list
-  - `GET /add` - Add customer form
-  - `POST /add` - Create customer
-  - `GET /customer/:id` - View customer
-  - `GET /edit/:id` - Edit form
-  - `POST /edit/:id` - Update customer
-  - `POST /delete/:id` - Delete customer
-  - `POST /logout` - Logout
-  - `GET /catalog` - View product catalog
-  - `GET /catalog/add` - Add product form
-  - `POST /catalog/add` - Create product
+- `POST /logout`: Logs the user out and destroys the session.
+- `GET /`: Displays the list of all customers.
+- `GET /add`: Shows the form to add a new customer.
+- `POST /add`: Creates a new customer.
+- `GET /customer/:id`: Displays the detail page for a specific customer, including their transaction history.
+- `POST /delete/:id`: Deletes a customer.
+- `GET /edit/:id`: Shows the form to edit a customer.
+- `POST /edit/:id`: Updates a customer's information.
+- `GET /customer/:id/add-transaction`: Shows the form to add a transaction for a customer.
+- `POST /customer/:id/add-transaction`: Creates a new transaction.
 
-### Admin Routes
+### Product Catalog Routes (Login Required)
 
-  - `GET /users` - User list
-  - `GET /users/add` - Add user form
-  - `POST /users/add` - Create user
-  - `POST /users/delete/:id` - Delete user
+- `GET /catalog`: Displays the product catalog grid.
+- `GET /catalog/add`: Shows the form to add a new product.
+- `POST /catalog/add`: Creates a new product.
+- `GET /catalog/product/:id`: Displays the detail page for a single product.
+- `GET /catalog/edit/:id`: Shows the form to edit a product.
+- `POST /catalog/edit/:id`: Updates a product's information.
+- `POST /catalog/delete/:id`: Deletes a product.
+
+### Admin Routes (Admin Role Required)
+
+- `GET /users`: Displays the list of all users.
+- `GET /users/add`: Shows the form to add a new user.
+- `POST /users/add`: Creates a new user.
+- `POST /users/delete/:id`: Deletes a user.
 
 ## 🤝 Contributing
 
-1.  Fork the repository
-2.  Create a feature branch
-3.  Commit your changes
-4.  Push to the branch
-5.  Open a Pull Request
+1.  Fork the repository.
+2.  Create a feature branch.
+3.  Commit your changes.
+4.  Push to the branch.
+5.  Open a Pull Request.
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-  - Built with [Axum](https://github.com/tokio-rs/axum) web framework
-  - Styled with [Gruvbox](https://github.com/morhetz/gruvbox) color scheme
-  - Persian font: [Vazirmatn](https://github.com/rastikerdar/vazirmatn)
