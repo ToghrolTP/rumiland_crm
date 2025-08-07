@@ -1,4 +1,4 @@
-use crate::models::{Product, User};
+use crate::{models::{Product, User}};
 use askama::Template;
 
 /// Product catalog page template
@@ -15,6 +15,22 @@ pub struct CatalogTemplate {
 #[derive(Template)]
 #[template(path = "add_product.html")]
 pub struct AddProductTemplate {
+    pub current_user: Option<User>,
+    pub active_page: &'static str,
+}
+
+#[derive(Template)]
+#[template(path = "product_detail.html")]
+pub struct ProductDetailTemplate {
+    pub product: Product,
+    pub current_user: Option<User>,
+    pub active_page: &'static str,
+}
+
+#[derive(Template)]
+#[template(path = "edit_product.html")]
+pub struct EditProductTemplate {
+    pub product: Product,
     pub current_user: Option<User>,
     pub active_page: &'static str,
 }

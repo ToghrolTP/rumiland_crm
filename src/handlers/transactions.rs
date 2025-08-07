@@ -8,7 +8,6 @@ use axum_extra::extract::{
     cookie::{Cookie, SameSite},
     CookieJar,
 };
-use parsidate::ParsiDate;
 use sqlx::{Pool, Sqlite};
 use crate::{
     error::{AppError, AppResult},

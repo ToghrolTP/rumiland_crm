@@ -42,6 +42,12 @@ pub fn configure_routes(pool: Pool<Sqlite>) -> Router {
             "/catalog/add",
             get(catalog::show_add_product_form).post(catalog::add_product),
         )
+        .route("/catalog/product/:id", get(catalog::view_product))
+        .route(
+            "/catalog/edit/:id",
+            get(catalog::show_edit_product_form).post(catalog::update_product),
+        )
+        .route("/catalog/delete/:id", post(catalog::delete_product))
         // Admin only routes
         .route("/users", get(users::list_users))
         .route(
