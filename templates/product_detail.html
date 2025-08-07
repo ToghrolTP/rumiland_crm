@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h1>{{ product.name }}</h1>
+        <span class="badge badge-primary">#{{ product.id }}</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="detail-grid">
+        <div class="detail-row">
+            <label class="detail-label">نام محصول</label>
+            <div class="detail-value">{{ product.name }}</div>
+        </div>
+
+        <div class="detail-row">
+            <label class="detail-label">قیمت</label>
+            <div class="detail-value" style="direction: ltr; text-align: right;">{{ product.formatted_price() }}</div>
+        </div>
+
+        <div class="detail-row">
+            <label class="detail-label">موجودی انبار</label>
+            <div class="detail-value">
+                <span class="badge {{ product.stock_status_class() }}">
+                    {% if product.stock > 0 %}
+                        {{ product.stock }} عدد موجود
+                    {% else %}
+                        ناموجود
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <label class="detail-label">توضیحات</label>
+            <div class="detail-value">
+                {% if product.description.is_empty() %}
+                    <span class="text-muted">بدون توضیحات</span>
+                {% else %}
+                    <div class="detail-notes">{{ product.description }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div
+        style="
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-2xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--border-light);
+        "
+    >
+        <a href="/catalog/edit/{{ product.id }}" class="btn btn-secondary">
+            <span>✏️</span>
+            <span>ویرایش</span>
+        </a>
+
+        <form
+            method="POST"
+            action="/catalog/delete/{{ product.id }}"
+            id="delete-form"
+            style="margin: 0"
+        >
+            <button type="submit" class="btn btn-danger" id="delete-btn">
+                <span class="btn-content">
+                    <span>🗑️</span>
+                    <span>حذف</span>
+                </span>
+                <span class="btn-loading" style="display: none">
+                    <span class="spinner"></span>
+                </span>
+            </button>
+        </form>
+
+        <a href="/catalog" class="btn btn-ghost" style="margin-right: auto">
+            <span>→</span>
+            <span>بازگشت به کاتالوگ</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    const deleteForm = document.getElementById("delete-form");
+    const deleteBtn = document.getElementById("delete-btn");
+    
+    if (deleteForm) {
+        deleteForm.addEventListener("submit", function (e) {
+            if (!confirm("آیا از حذف محصول «{{ product.name }}» اطمینان دارید؟")) {
+                e.preventDefault();
+                return;
+            }
+
+            deleteBtn.disabled = true;
+            deleteBtn.classList.add("btn-loading-state");
+            deleteBtn.querySelector(".btn-content").style.display = "none";
+            deleteBtn.querySelector(".btn-loading").style.display = "inline-flex";
+        });
+    }
+</script>
+{% endblock %}
