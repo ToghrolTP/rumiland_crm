@@ -3,7 +3,7 @@ use sqlx::{Pool, Sqlite};
 
 /// Run all database migrations
 pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
-    // Create customers table
+    // Customers table
     sqlx::query(
         r#"
         CREATE TABLE IF NOT EXISTS customers (
@@ -23,7 +23,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     .execute(pool)
     .await?;
 
-    // Create users table
+    // Users table
     sqlx::query(
         r#"
         CREATE TABLE IF NOT EXISTS users (
@@ -39,7 +39,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     .execute(pool)
     .await?;
 
-    // Create sessions table
+    // Sessions table
     sqlx::query(
         r#"
         CREATE TABLE IF NOT EXISTS sessions (
@@ -53,7 +53,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     .execute(pool)
     .await?;
 
-    // Create products table
+    // Products table
     sqlx::query(
         r#"
         CREATE TABLE IF NOT EXISTS products (
@@ -69,7 +69,23 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     )
     .execute(pool)
     .await?;
+    
+    // Product variants
+    sqlx::query(
+        r#"
+        CREATE TABLE IF NOT EXISTS product_variants (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            variant_name TEXT NOT NULL DEFAULT '',
+            product_id INTEGER NOT NULL,
+            description TEXT NOT NULL DEFAULT '',
+            price REAL NOT NULL,
+            stock INTEGER NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        )
+        "#
+    ).execute(pool).await?;
 
+    // Transactions
     sqlx::query(
         r#"
         CREATE TABLE IF NOT EXISTS transactions (
