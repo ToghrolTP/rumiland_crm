@@ -175,6 +175,7 @@
                     <th>نوع تراکنش</th>
                     <th>مبلغ</th>
                     <th>توضیحات</th>
+                    <th>عملیات</th>
                 </tr>
             </thead>
             <tbody>
@@ -192,6 +193,28 @@
                             {% when None %}
                                 <span class="text-muted">--</span>
                         {% endmatch %}
+                    </td>
+                    <td style="display: flex;">
+                        <a href="/customer/{{ customer.id }}/edit-transaction/{{ transaction.id }}" class="btn btn-secondary">
+                            <span>✏️</span>
+                        </a>
+                        <span style="width: 10px;"></span>
+                        <form
+                            method="POST"
+                            action="/customer/{{ customer.id }}/delete-transaction/{{ transaction.id }}"
+                            id="delete-form"
+                            style="margin: 0"
+                        >
+                            <button type="submit" class="btn btn-danger" id="delete-btn" style="border: 2px solid var(--accent-danger);">
+                                <span class="btn-content">
+                                    <span>🗑️</span>
+                                </span>
+                                <span class="btn-loading" style="display: none">
+                                    <span class="spinner"></span>
+                                    <span>در حال حذف...</span>
+                                </span>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
