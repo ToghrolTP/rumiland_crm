@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}ویرایش تراکنش برای {{ customer.full_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>ویرایش تراکنش</h1>
+    <p class="text-muted" style="margin-top: -0.5rem;">برای مشتری: <strong>{{ customer.full_name }}</strong></p>
+</div>
+
+<div class="card">
+    <form method="POST" action="/customer/{{ customer.id }}/edit-transaction/{{ transaction.id }}">
+        <div class="form-group">
+            <label for="amount" class="form-label">مبلغ (تومان) *</label>
+            <input
+                type="number"
+                id="amount"
+                name="amount"
+                class="form-input"
+                required
+                autofocus
+                value="{{ transaction.amount }}"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="transaction_type" class="form-label">نوع تراکنش *</label>
+            <select id="transaction_type" name="transaction_type" class="form-input" required>
+                {% for type in transaction_types %}
+                    <option value="{{ type.as_str() }}" {% if type.as_str() == transaction.transaction_type %}selected{% endif %}>
+                        {{ type.display_name() }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="transaction_date" class="form_label">تاریخ تراکنش *</label>
+            <input
+                type="text"
+                id="transaction_date"
+                name="transaction_date"
+                class="form-input"
+                required
+                autocomplete="off"
+                value="{{ transaction.formatted_date_shamsi() }}"
+            />
+             <p class="form-hint">
+                از تقویم برای انتخاب تاریخ استفاده کنید.
+            </p>
+        </div>
+
+        <div class="form-group">
+            <label for="description" class="form-label">توضیحات</label>
+            <textarea
+                id="description"
+                name="description"
+                class="form-textarea"
+                rows="3"
+                placeholder="توضیحات اختیاری در مورد تراکنش..."
+            >{{ transaction.description.as_deref().unwrap_or("") }}</textarea> </div>
+
+        <div class="form-group form-button-group">
+            <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                style="flex: 1"
+            >
+                <span class="btn-content">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">ذخیره تغییرات</span>
+                </span>
+            </button>
+            <a href="/customer/{{ customer.id }}" class="btn btn-ghost btn-lg">
+                انصراف
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#transaction_date").pDatepicker({
+            format: "YYYY/MM/DD",
+            autoClose: true,
+        });
+    });
+</script>
+{% endblock %}
