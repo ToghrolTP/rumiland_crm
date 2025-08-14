@@ -29,6 +29,11 @@ pub fn configure_routes(pool: Pool<Sqlite>) -> Router {
             "/customer/:id/add-transaction",
             get(transactions::show_add_transaction_form).post(transactions::add_transaction),
         )
+        .route("/customer/:customer_id/delete-transaction/:transaction_id", post(transactions::delete_transaction))
+        .route(
+            "/customer/:customer_id/edit-transaction/:transaction_id",
+            get(transactions::show_edit_transaction_form).post(transactions::edit_transaction)
+        )
         .route("/delete/:id", post(customers::delete_customer))
         .route(
             "/edit/:id",
