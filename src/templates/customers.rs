@@ -11,7 +11,7 @@ pub struct ListTemplate {
     pub flash_message: Option<String>,
 }
 
-/// Add customer page template
+/// Customer page template
 #[derive(Template)]
 #[template(path = "add.html")]
 pub struct AddTemplate {
