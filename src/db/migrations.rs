@@ -16,7 +16,8 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
             city TEXT NOT NULL DEFAULT '',
             address TEXT NOT NULL DEFAULT '',
             notes TEXT NOT NULL,
-            job_title TEXT NOT NULL DEFAULT ''
+            job_title TEXT NOT NULL DEFAULT '',
+            coordinates TEXT NOT NULL DEFAULT ''
         )
         "#,
     )
@@ -53,7 +54,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     .execute(pool)
     .await?;
 
-    // Products table
+    // Products
     sqlx::query(
         r#"
         CREATE TABLE IF NOT EXISTS products (
@@ -69,7 +70,7 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     )
     .execute(pool)
     .await?;
-    
+
     // Product variants
     sqlx::query(
         r#"
@@ -80,10 +81,13 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
             description TEXT NOT NULL DEFAULT '',
             price REAL NOT NULL,
             stock INTEGER NOT NULL,
-            created_at TEXT DEFAULT (datetime('now'))
+            created_at TEXT DEFAULT (datetime('now')),
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
         )
-        "#
-    ).execute(pool).await?;
+        "#,
+    )
+    .execute(pool)
+    .await?;
 
     // Transactions
     sqlx::query(
@@ -118,18 +122,24 @@ pub async fn run_migrations(pool: &Pool<Sqlite>) -> AppResult<()> {
     sqlx::query("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)")
         .execute(pool)
         .await?;
-    
-    sqlx::query("CREATE INDEX IF NOT EXISTS idx_transactions_customer_id ON transactions(customer_id)")
-        .execute(pool)
-        .await?;
+
+    sqlx::query(
+        "CREATE INDEX IF NOT EXISTS idx_transactions_customer_id ON transactions(customer_id)",
+    )
+    .execute(pool)
+    .await?;
 
     // Previous migrations
     let _ = sqlx::query("ALTER TABLE customers ADD COLUMN city TEXT NOT NULL DEFAULT ''")
         .execute(pool)
         .await;
 
-    // New
     let _ = sqlx::query("ALTER TABLE customers ADD COLUMN sales_count INTEGER NOT NULL DEFAULT 0")
+        .execute(pool)
+        .await;
+
+    // New
+    let _ = sqlx::query("ALTER TABLE customers ADD COLUMN coordinates TEXT NOT NULL DEFAULT ''")
         .execute(pool)
         .await;
 
