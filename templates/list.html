@@ -65,7 +65,7 @@ content %}
                 <th>تعداد فروش</th>
                 <!-- <th>تاریخ خرید</th> -->
                 <th>سمت شغلی</th>
-                <th>آدرس</th>
+                <th>موقعیت مکانی</th>
                 <th>عملیات</th>
             </tr>
         </thead>
@@ -93,12 +93,13 @@ content %}
                     {% endif %}
                 </td>
                 <td class="auto-fit">
-                    {% if customer.address.is_empty() %}
+                    {% if customer.coordinates.is_empty() %}
                         <span class="text-muted">--</span>
-                    {% else if customer.city.is_empty() %}
-                        {{ customer.address }}
                     {% else %}
-                        {{ customer.city_display_name() }} - {{ customer.address }}
+                        <a href="geo:{{ customer.coordinates }}" class="link-style">
+                            <span>📍</span>
+                            <span>نمایش روی نقشه</span>
+                        </a>
                     {% endif %}
                 </td>
                 <td>

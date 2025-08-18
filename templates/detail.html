@@ -94,6 +94,20 @@
                 {% endif %}
             </div>
         </div>
+        
+        <div class="detail-row">
+            <label class="detail-label">موقعیت مکانی</label>
+            <div class="detail-value">
+                {% if customer.coordinates.is_empty() %}
+                    <span class="text-muted">ثبت نشده</span>
+                {% else %}
+                <a href="geo:{{ customer.coordinates }}" class="link-style">
+                    <span>📍</span>
+                    <span>نمایش روی نقشه</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
 
         <div class="detail-row">
             <label class="detail-label">یادداشت‌ها</label>
