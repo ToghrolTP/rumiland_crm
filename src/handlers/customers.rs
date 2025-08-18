@@ -86,6 +86,7 @@ pub async fn add_customer(
     form.job_title = form.job_title.trim().to_string();
     form.address = form.address.trim().to_string();
     form.city = form.city.trim().to_string();
+    form.coordinates = form.coordinates.trim().to_string();
 
     // Validate required fields
     if form.full_name.trim().is_empty() {
@@ -120,8 +121,6 @@ pub async fn add_customer(
         ));
     }
 
-    
-
     // Validate city
     let city_str = form.city;
 
@@ -137,8 +136,8 @@ pub async fn add_customer(
     }
 
     sqlx::query(
-        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, job_title, city, address, notes)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO customers (full_name, company, email, phone_number, sales_count, job_title, city, address, notes, coordinates)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&form.full_name)
     .bind(&form.company)
@@ -149,6 +148,7 @@ pub async fn add_customer(
     .bind(city_str)
     .bind(&form.address)
     .bind(&form.notes)
+    .bind(&form.coordinates)
     .execute(&pool)
     .await
     .map_err(|e| {
@@ -197,7 +197,7 @@ pub async fn view_customer(
         .fetch_optional(&pool)
         .await?
         .ok_or(AppError::NotFound)?;
-    
+
     let transactions = sqlx::query_as::<_, Transaction>(
         "SELECT * FROM transactions WHERE customer_id = ? ORDER BY transaction_date DESC",
     )
@@ -271,14 +271,13 @@ pub async fn update_customer(
         ));
     }
 
-
     // Validate and normalize email
     form.email = validate_email(&form.email)?;
     form.email = normalize_email(&form.email);
 
     let result = sqlx::query(
         "UPDATE customers
-         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, job_title = ?, city = ?, address = ?, notes = ?
+         SET full_name = ?, company = ?, email = ?, phone_number = ?, sales_count = ?, job_title = ?, city = ?, address = ?, notes = ?, coordinates = ?
          WHERE id = ?"
     )
     .bind(&form.full_name)
@@ -290,6 +289,7 @@ pub async fn update_customer(
     .bind(city_str)
     .bind(&form.address)
     .bind(&form.notes)
+    .bind(&form.coordinates)
     .bind(id)
     .execute(&pool)
     .await?;
@@ -377,6 +377,7 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         "شهر",
         "آدرس",
         "یادداشت‌ها",
+        "مختصات"
     ];
 
     for (i, header) in headers.iter().enumerate() {
@@ -395,6 +396,7 @@ pub async fn export_customer(State(pool): State<Pool<Sqlite>>) -> AppResult<Resp
         sheet.write_string(row, 8, &customer.city_display_name(), None)?;
         sheet.write_string(row, 9, &customer.address, None)?;
         sheet.write_string(row, 10, &customer.notes, None)?;
+        sheet.write_string(row, 11, &customer.coordinates, None)?;
     }
 
     workbook.close()?;
