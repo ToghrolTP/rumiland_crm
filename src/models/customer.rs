@@ -14,6 +14,7 @@ pub struct Customer {
     pub city: String,
     pub address: String,
     pub notes: String,
+    pub coordinates: String,
 }
 
 /// Form data for creating/updating a customer
@@ -28,6 +29,7 @@ pub struct CustomerForm {
     pub city: String,
     pub address: String,
     pub notes: String,
+    pub coordinates: String,
 }
 
 impl Customer {
