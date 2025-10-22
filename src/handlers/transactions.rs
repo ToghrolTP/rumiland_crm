@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use crate::{
     error::{AppError, AppResult},
     middleware::auth::get_current_user,
@@ -156,7 +154,7 @@ pub async fn edit_transaction(
     State(pool): State<Pool<Sqlite>>,
     jar: CookieJar,
     Path((customer_id, transaction_id)): Path<(i64, i64)>,
-    Form(mut form): Form<TransactionForm>,
+    Form(form): Form<TransactionForm>,
 ) -> AppResult<impl IntoResponse> {
     let shamsi_date = persian_to_english_numbers(&form.transaction_date);
 

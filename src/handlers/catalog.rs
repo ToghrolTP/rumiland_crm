@@ -13,7 +13,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     error::{AppError, AppResult},
     middleware::auth::get_current_user,
-    models::{Product, ProductForm, User},
+    models::{Product, ProductForm},
     templates::catalog::{AddProductTemplate, CatalogTemplate, ProductDetailTemplate, EditProductTemplate},
 };
 

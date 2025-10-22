@@ -1,5 +1,6 @@
 use std::fs;
 
+use serde_json;
 use askama::Template;
 use axum::{
     body::Body,
@@ -204,10 +205,13 @@ pub async fn view_customer(
     .bind(id)
     .fetch_all(&pool)
     .await?;
+    
+    let transactions_json = serde_json::to_string(&transactions).unwrap_or_else(|_| "[]".to_string());
 
     let template = DetailTemplate {
         customer,
         transactions,
+        transactions_json,
         active_page: "",
         current_user,
         flash_message,
