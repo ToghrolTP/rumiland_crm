@@ -8,3 +8,4 @@ rumiland.db.backup-*
 tools/*.sql
 node_modules/
 package-lock.json
+static/css/styles.css.map
