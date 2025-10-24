@@ -1,0 +1,68 @@
+// ===========================
+// Text Utilities
+// ===========================
+
+.text-muted {
+  color: $text-muted;
+}
+
+.text-small {
+  font-size: 0.875rem;
+  color: $text-secondary;
+}
+
+// ===========================
+// Phone Number Styling
+// ===========================
+
+.phone-link {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-sm;
+  color: $accent-secondary;
+  text-decoration: none;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $accent-primary;
+  }
+}
+
+.phone-icon {
+  font-size: 1.125rem;
+}
+
+.phone-number {
+  font-family: $font-mono;
+  letter-spacing: 0.05em;
+  direction: ltr;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+// ===========================
+// Email Styling
+// ===========================
+
+.email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-sm;
+  color: $accent-secondary;
+  text-decoration: none;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $accent-primary;
+  }
+}
+
+.email-icon {
+  font-size: 1.125rem;
+}
+
+.email-address {
+  font-family: $font-mono;
+  direction: ltr;
+  display: inline-block;
+}

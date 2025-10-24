@@ -1,0 +1,15 @@
+{
+  "name": "rumiland-crm",
+  "version": "1.0.0",
+  "description": "CRM Application Styles",
+  "scripts": {
+    "build:css": "sass static/scss/styles.scss static/css/styles.css --style compressed",
+    "watch:css": "sass static/scss/styles.scss static/css/styles.css --watch",
+    "dev": "npm run watch:css"
+  },
+  "devDependencies": {
+    "sass": "^1.69.5"
+  },
+  "author": "",
+  "license": "MIT"
+}

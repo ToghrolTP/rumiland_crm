@@ -1,0 +1,71 @@
+// ===========================
+// Navigation Bar
+// ===========================
+
+.navbar {
+  background-color: rgba(40, 40, 40, 0.95);
+  border-bottom: 1px solid $border-color;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $space-md $space-lg;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  color: $text-primary;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.25rem;
+  transition: opacity $transition-base;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.brand-icon {
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: $space-xs;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-sm $space-md;
+  color: $text-muted;
+  text-decoration: none;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+  font-weight: 500;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-tertiary;
+  }
+
+  &.active {
+    color: $accent-primary;
+    background-color: rgba(184, 187, 38, 0.1);
+  }
+}
+
+.nav-icon {
+  font-size: 1.125rem;
+}

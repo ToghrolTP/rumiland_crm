@@ -1,0 +1,35 @@
+// ===========================
+// Main Layout
+// ===========================
+
+.main-content {
+  flex: 1;
+  padding: $space-2xl 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $space-lg;
+}
+
+// ===========================
+// Page Headers
+// ===========================
+
+.page-header {
+  margin-bottom: $space-2xl;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  margin-bottom: $space-lg;
+}
+
+.page-actions {
+  display: flex;
+  gap: $space-sm;
+  flex-wrap: wrap;
+}

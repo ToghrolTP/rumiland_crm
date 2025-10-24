@@ -1,0 +1,51 @@
+// ===========================
+// Alert Messages
+// ===========================
+
+.alert {
+  padding: $space-md $space-lg;
+  border-radius: $radius-md;
+  margin-bottom: $space-lg;
+  display: flex;
+  align-items: flex-start;
+  gap: $space-md;
+  @include slide-down;
+}
+
+.alert-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-title {
+  font-weight: 600;
+  margin-bottom: $space-xs;
+}
+
+.alert-message {
+  font-size: 0.9375rem;
+}
+
+// ===========================
+// Alert Variants
+// ===========================
+
+.alert-error {
+  @include alert-variant(rgba(251, 73, 52, 0.1), $accent-danger);
+}
+
+.alert-warning {
+  @include alert-variant(rgba(250, 189, 47, 0.1), $accent-warning);
+}
+
+.alert-info {
+  @include alert-variant(rgba(131, 165, 152, 0.1), $accent-secondary);
+}
+
+.alert-success {
+  @include alert-variant(rgba(184, 187, 38, 0.1), $accent-success);
+}

@@ -1,0 +1,68 @@
+// ===========================
+// Flash Messages
+// ===========================
+
+.flash-message {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: $space-md $space-lg;
+  margin-bottom: $space-lg;
+  border-radius: $radius-lg;
+  @include slide-down;
+  position: relative;
+}
+
+// ===========================
+// Flash Message Variants
+// ===========================
+
+.flash-success {
+  background-color: rgba(184, 187, 38, 0.15);
+  border: 2px solid $accent-success;
+  color: $text-primary;
+}
+
+.flash-error {
+  background-color: rgba(251, 73, 52, 0.15);
+  border: 2px solid $accent-danger;
+  color: $text-primary;
+}
+
+.flash-warning {
+  background-color: rgba(250, 189, 47, 0.15);
+  border: 2px solid $accent-warning;
+  color: $text-primary;
+}
+
+// ===========================
+// Flash Message Elements
+// ===========================
+
+.flash-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.flash-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+.flash-close {
+  background: none;
+  border: none;
+  color: $text-muted;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: $space-xs;
+  margin: calc(#{$space-xs} * -1);
+  border-radius: $radius-sm;
+  transition: all $transition-fast;
+  line-height: 1;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: $text-primary;
+  }
+}

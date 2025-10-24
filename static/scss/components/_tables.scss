@@ -1,0 +1,72 @@
+// ===========================
+// Tables
+// ===========================
+
+.table-container {
+  background-color: $bg-card;
+  border-radius: $radius-lg;
+  overflow: auto;
+  box-shadow: $shadow-sm;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: $bg-tertiary;
+  border-bottom: 2px solid $border-color;
+}
+
+th {
+  padding: $space-md $space-lg;
+  text-align: right;
+  font-weight: 600;
+  color: $text-primary;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: $space-md $space-lg;
+  text-align: right;
+  border-bottom: 1px solid $border-light;
+  color: $text-secondary;
+
+  a {
+    color: $accent-secondary;
+    text-decoration: none;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $accent-primary;
+      text-decoration: underline;
+    }
+  }
+}
+
+.auto-fit {
+  width: 1%;
+  white-space: nowrap;
+}
+
+tbody {
+  tr {
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: rgba(131, 165, 152, 0.05);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.table-actions {
+  display: flex;
+  gap: $space-xs;
+}

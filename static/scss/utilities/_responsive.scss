@@ -1,0 +1,81 @@
+// ===========================
+// Responsive Design
+// ===========================
+
+@include mobile {
+  html {
+    font-size: 14px;
+  }
+
+  .nav-container {
+    padding: $space-sm $space-md;
+  }
+
+  .nav-link {
+    span:not(.nav-icon) {
+      display: none;
+    }
+  }
+
+  .container {
+    padding: 0 $space-md;
+  }
+
+  .card {
+    padding: $space-lg;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: $space-sm;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .flash-message {
+    margin-left: $space-md;
+    margin-right: $space-md;
+  }
+
+  .form-input {
+    font-size: 16px; // Prevents zoom on iOS
+  }
+
+  .area-codes {
+    gap: $space-sm;
+    font-size: 0.75rem;
+  }
+
+  // Loading states on mobile
+  .form-overlay {
+    padding: $space-md;
+  }
+
+  .overlay-content {
+    padding: $space-lg;
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .spinner-large {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}

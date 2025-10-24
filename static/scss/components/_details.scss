@@ -1,0 +1,52 @@
+// ===========================
+// Detail Views
+// ===========================
+
+.detail-grid {
+  display: grid;
+  gap: $space-lg;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: $space-md;
+  padding-bottom: $space-lg;
+  border-bottom: 1px solid $border-light;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.detail-label {
+  font-weight: 600;
+  color: $text-muted;
+  font-size: 0.875rem;
+}
+
+.detail-value {
+  color: $text-primary;
+
+  a {
+    color: $accent-secondary;
+    text-decoration: none;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $accent-primary;
+      text-decoration: underline;
+    }
+  }
+}
+
+.detail-notes {
+  background-color: $bg-secondary;
+  padding: $space-md;
+  border-radius: $radius-md;
+  border: 1px solid $border-light;
+  white-space: pre-wrap;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}

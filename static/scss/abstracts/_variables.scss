@@ -1,0 +1,63 @@
+// ===========================
+// Gruvbox Dark Colors
+// ===========================
+$bg-primary: #1d2021;
+$bg-secondary: #282828;
+$bg-tertiary: #3c3836;
+$bg-card: #32302f;
+
+$text-primary: #fbf1c7;
+$text-secondary: #ebdbb2;
+$text-muted: #a89984;
+
+$accent-primary: #b8bb26;
+$accent-secondary: #83a598;
+$accent-danger: #fb4934;
+$accent-warning: #fabd2f;
+$accent-success: #b8bb26;
+
+$border-color: #504945;
+$border-light: #3c3836;
+
+// ===========================
+// Spacing System
+// ===========================
+$space-xs: 0.25rem;
+$space-sm: 0.5rem;
+$space-md: 1rem;
+$space-lg: 1.5rem;
+$space-xl: 2rem;
+$space-2xl: 3rem;
+
+// ===========================
+// Border Radius
+// ===========================
+$radius-sm: 0.375rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-full: 9999px;
+
+// ===========================
+// Transitions
+// ===========================
+$transition-fast: 150ms ease;
+$transition-base: 200ms ease;
+$transition-slow: 300ms ease;
+
+// ===========================
+// Shadows
+// ===========================
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+
+// ===========================
+// Typography
+// ===========================
+$font-base: "Vazirmatn", system-ui, -apple-system, sans-serif;
+$font-mono: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+
+// ===========================
+// Breakpoints
+// ===========================
+$breakpoint-mobile: 768px;

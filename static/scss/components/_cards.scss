@@ -1,0 +1,11 @@
+// ===========================
+// Cards
+// ===========================
+
+.card {
+  background-color: $bg-card;
+  border: 1px solid $border-light;
+  border-radius: $radius-lg;
+  padding: $space-xl;
+  @include card-shadow;
+}

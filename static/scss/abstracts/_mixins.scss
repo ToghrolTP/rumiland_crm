@@ -1,0 +1,94 @@
+// ===========================
+// Flexbox Mixins
+// ===========================
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+// ===========================
+// Button Variant Mixin
+// ===========================
+@mixin button-variant($bg-color, $hover-color) {
+  background-color: $bg-color;
+
+  &:hover {
+    background-color: $hover-color;
+    box-shadow: $shadow-sm;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ===========================
+// Card Shadow Mixin
+// ===========================
+@mixin card-shadow {
+  box-shadow: $shadow-sm;
+  transition: all $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: $border-color;
+  }
+}
+
+// ===========================
+// Media Query Mixins
+// ===========================
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+// ===========================
+// Animation Mixins
+// ===========================
+@mixin slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+@mixin fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// ===========================
+// Badge Variant Mixin
+// ===========================
+@mixin badge-variant($bg-color, $text-color) {
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+// ===========================
+// Alert Variant Mixin
+// ===========================
+@mixin alert-variant($bg-color, $border-color) {
+  background-color: $bg-color;
+  border: 1px solid $border-color;
+  color: $text-primary;
+}
+
+// ===========================
+// Form Input States
+// ===========================
+@mixin input-state($border-color, $bg-color) {
+  border-color: $border-color;
+  background-color: $bg-color;
+}

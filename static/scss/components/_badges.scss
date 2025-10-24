@@ -1,0 +1,34 @@
+// ===========================
+// Badges & Tags
+// ===========================
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-xs $space-md;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: $radius-full;
+  background-color: $bg-tertiary;
+  color: $text-muted;
+}
+
+// ===========================
+// Badge Variants
+// ===========================
+
+.badge-primary {
+  @include badge-variant(rgba(184, 187, 38, 0.2), $accent-primary);
+}
+
+.badge-info {
+  @include badge-variant(rgba(131, 165, 152, 0.2), $accent-secondary);
+}
+
+.badge-success {
+  @include badge-variant(rgba(184, 187, 38, 0.2), $accent-primary);
+}
+
+.badge-error {
+  @include badge-variant(rgba(251, 73, 52, 0.2), $accent-danger);
+}

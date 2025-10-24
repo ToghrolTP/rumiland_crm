@@ -1,0 +1,284 @@
+// ===========================
+// Forms
+// ===========================
+
+.form-group {
+  margin-bottom: $space-lg;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  margin-bottom: $space-sm;
+  font-weight: 500;
+  color: $text-primary;
+  font-size: 0.875rem;
+}
+
+.form-label-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: $radius-full;
+  font-weight: 600;
+}
+
+.badge-success {
+  background-color: rgba(184, 187, 38, 0.2);
+  color: $accent-primary;
+}
+
+.badge-error {
+  background-color: rgba(251, 73, 52, 0.2);
+  color: $accent-danger;
+}
+
+// ===========================
+// Form Inputs
+// ===========================
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: $space-sm $space-md;
+  background-color: $bg-secondary;
+  border: 2px solid $border-light;
+  border-radius: $radius-md;
+  color: $text-primary;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all $transition-base;
+
+  &:hover {
+    border-color: $border-color;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $accent-primary;
+    background-color: $bg-tertiary;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &[style*="pointer-events: none"] {
+    cursor: not-allowed;
+  }
+}
+
+.form-input {
+  &.input-valid {
+    @include input-state($accent-primary, rgba(184, 187, 38, 0.05));
+  }
+
+  &.input-error {
+    @include input-state($accent-danger, rgba(251, 73, 52, 0.05));
+  }
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+// ===========================
+// Form Hints & Errors
+// ===========================
+
+.form-hint {
+  margin-top: $space-xs;
+  font-size: 0.8125rem;
+  color: $text-muted;
+}
+
+.keyboard-hint {
+  color: $accent-warning;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.form-error {
+  margin-top: $space-xs;
+  font-size: 0.8125rem;
+  color: $accent-danger;
+  display: none;
+  @include slide-down;
+}
+
+.field-error-message {
+  color: $accent-danger;
+  font-size: 0.8125rem;
+  margin-top: $space-xs;
+  @include fade-in;
+}
+
+// ===========================
+// Form Details
+// ===========================
+
+.form-details {
+  margin-top: $space-sm;
+  font-size: 0.8125rem;
+  color: $text-muted;
+
+  summary {
+    cursor: pointer;
+    user-select: none;
+    padding: $space-xs 0;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $text-secondary;
+    }
+  }
+
+  &[open] summary {
+    margin-bottom: $space-xs;
+    color: $text-secondary;
+  }
+}
+
+// ===========================
+// Area Codes
+// ===========================
+
+.area-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-md;
+  padding: $space-sm;
+  background-color: $bg-tertiary;
+  border-radius: $radius-sm;
+  font-family: monospace;
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+// ===========================
+// Email Suggestions
+// ===========================
+
+.email-suggestions {
+  margin-top: $space-sm;
+  padding: $space-sm;
+  background-color: rgba(131, 165, 152, 0.1);
+  border: 1px solid $accent-secondary;
+  border-radius: $radius-md;
+  @include slide-down;
+}
+
+.suggestion-label {
+  font-size: 0.8125rem;
+  color: $text-muted;
+  margin-bottom: $space-xs;
+}
+
+.suggestion-btn {
+  background-color: $bg-tertiary;
+  border: 1px solid $border-color;
+  color: $text-primary;
+  padding: $space-xs $space-md;
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all $transition-fast;
+  font-family: monospace;
+  width: 100%;
+  text-align: right;
+
+  &:hover {
+    background-color: $accent-secondary;
+    color: $text-primary;
+    border-color: $accent-secondary;
+  }
+}
+
+// ===========================
+// Form Overlay
+// ===========================
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(29, 32, 33, 0.95);
+  @include flex-center;
+  z-index: 1000;
+  @include fade-in;
+}
+
+.overlay-content {
+  text-align: center;
+  padding: $space-2xl;
+
+  p {
+    margin-top: $space-lg;
+    color: $text-primary;
+    font-size: 1.125rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+// ===========================
+// Form Errors
+// ===========================
+
+.form-errors {
+  background-color: rgba(251, 73, 52, 0.1);
+  border: 2px solid $accent-danger;
+  border-radius: $radius-lg;
+  padding: $space-lg;
+  margin-bottom: $space-xl;
+  animation: shakeIn 0.5s ease-out;
+}
+
+.form-errors-header {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  margin-bottom: $space-md;
+
+  h3 {
+    color: $accent-danger;
+    margin: 0;
+    font-size: 1.125rem;
+  }
+}
+
+.form-errors-icon {
+  font-size: 1.5rem;
+}
+
+.form-errors-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-error-item {
+  color: $text-secondary;
+  padding: $space-sm 0;
+  padding-right: $space-lg;
+  position: relative;
+
+  &:before {
+    content: "•";
+    position: absolute;
+    right: 0;
+    top: $space-sm;
+    color: $accent-danger;
+    font-weight: bold;
+  }
+
+  strong {
+    color: $text-primary;
+  }
+}

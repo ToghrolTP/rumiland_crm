@@ -1,0 +1,35 @@
+// ===========================
+// Main SCSS Entry Point
+// ===========================
+
+// 1. Abstracts - Variables and Mixins
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
+
+// 2. Base - Reset, Typography, Animations
+@import 'base/reset';
+@import 'base/typography';
+@import 'base/animations';
+
+// 3. Layout - Structure
+@import 'layout/navbar';
+@import 'layout/container';
+@import 'layout/footer';
+
+// 4. Components - UI Elements
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/tables';
+@import 'components/forms';
+@import 'components/flash-messages';
+@import 'components/badges';
+@import 'components/alerts';
+@import 'components/spinners';
+@import 'components/empty-states';
+@import 'components/details';
+@import 'components/datepicker';
+
+// 5. Utilities - Helper Classes
+@import 'utilities/spacing';
+@import 'utilities/text';
+@import 'utilities/responsive';

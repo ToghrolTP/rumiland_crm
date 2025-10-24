@@ -1,0 +1,81 @@
+// ===========================
+// Persian Datepicker Overrides
+// ===========================
+
+.datepicker-plot-area {
+  font-family: $font-base !important;
+  border: 1px solid $border-light !important;
+  border-radius: 5px !important;
+  background-color: $bg-primary !important;
+
+  * {
+    color: #fff2bc !important;
+  }
+
+  .datepicker-navigator {
+    .pwt-btn-next,
+    .pwt-btn-switch,
+    .pwt-btn-prev {
+      background-color: $bg-card !important;
+      color: #f9efc5 !important;
+    }
+  }
+
+  .datepicker-day-view {
+    .month-grid-box {
+      .header {
+        .header-row-cell {
+          color: #756d56 !important;
+        }
+      }
+    }
+
+    .table-days {
+      td {
+        span {
+          background-color: $bg-primary !important;
+          color: $text-secondary !important;
+
+          &.other-month {
+            color: #7c6f64 !important;
+          }
+
+          &:hover {
+            background-color: #458588 !important;
+            border-radius: 100px !important;
+          }
+        }
+
+        &.selected span,
+        &:hover {
+          background-color: #458588 !important;
+          border-radius: 100px !important;
+        }
+      }
+    }
+  }
+
+  .datepicker-year-view {
+    .year-item {
+      background-color: $bg-primary !important;
+      color: $text-secondary !important;
+
+      &:hover {
+        background-color: #458588 !important;
+        border-radius: 100px !important;
+      }
+    }
+  }
+
+  .datepicker-month-view {
+    .month-item {
+      background-color: $bg-primary !important;
+      color: $text-secondary !important;
+
+      &:hover {
+        background-color: #458588 !important;
+        border-radius: 100px !important;
+      }
+    }
+  }
+}

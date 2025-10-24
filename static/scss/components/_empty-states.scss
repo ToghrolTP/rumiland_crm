@@ -1,0 +1,25 @@
+// ===========================
+// Empty States
+// ===========================
+
+.empty-state {
+  text-align: center;
+  padding: $space-2xl;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: $space-md;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 1.125rem;
+  color: $text-primary;
+  margin-bottom: $space-sm;
+}
+
+.empty-description {
+  color: $text-muted;
+  margin-bottom: $space-lg;
+}

@@ -1,0 +1,117 @@
+// ===========================
+// Buttons
+// ===========================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-sm $space-lg;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all $transition-base;
+  white-space: nowrap;
+  font-family: inherit;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// ===========================
+// Button Variants
+// ===========================
+
+.btn-primary {
+  @include button-variant($accent-primary, #98971a);
+  color: $bg-primary;
+}
+
+.btn-secondary {
+  @include button-variant($accent-secondary, #458588);
+  color: $text-primary;
+}
+
+.btn-danger {
+  @include button-variant($accent-danger, #cc241d);
+  color: $text-primary;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: $text-secondary;
+  border: 1px solid $border-color;
+
+  &:hover {
+    background-color: $bg-tertiary;
+    color: $text-primary;
+  }
+}
+
+// ===========================
+// Button Sizes
+// ===========================
+
+.btn-sm {
+  padding: $space-xs $space-md;
+  font-size: 0.8125rem;
+}
+
+.btn-lg {
+  padding: $space-md $space-xl;
+  font-size: 1rem;
+}
+
+// ===========================
+// Button Loading States
+// ===========================
+
+.btn-loading {
+  display: none;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.btn-loading-state {
+  cursor: wait;
+  opacity: 0.8;
+
+  &:hover {
+    transform: none;
+  }
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+// ===========================
+// Button Group
+// ===========================
+
+.form-button-group {
+  display: flex;
+  gap: $space-sm;
+  margin-top: $space-xl;
+}
